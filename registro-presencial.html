@@ -501,14 +501,14 @@
 <header class="nsub-header">
   <div class="strip-flag"></div>
   <div class="container nsub-header__bar">
-    <a class="nsub-header__logo" href="index.html" aria-label="Back to home">
+    <a class="nsub-header__logo" href="/" aria-label="Back to home">
       <img class="ribbon-globe" src="assets/ncte-globe-red.png" alt="NCTE" />
       <span>
         <b>NCTE</b>
         <span>COSTA RICA</span>
       </span>
     </a>
-    <a class="nsub-header__back" href="index.html">
+    <a class="nsub-header__back" href="/">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       Back to home
     </a>
@@ -986,7 +986,7 @@
 <footer class="nplan-foot">
   <div class="container">
     © 2026 CCCN · National Conference for Teachers of English Costa Rica ·
-    <a href="index.html">Back to NCTE 2026</a>
+    <a href="/">Back to NCTE 2026</a>
   </div>
 </footer>
 
@@ -1005,7 +1005,7 @@
 
   // Gate: only registered NCTE 2026 attendees can pick in-person sessions.
   const account = window.NCTEAuth && window.NCTEAuth.requireAuth({
-    redirect: "index.html",
+    redirect: "/",
     intent: "login",
   });
   if (!account) return; // requireAuth has already triggered the redirect
@@ -1032,7 +1032,7 @@
   document.querySelector("[data-ident-change]").addEventListener("click", () => {
     if (confirm("Sign out and return to the homepage?")) {
       window.NCTEAuth.logout();
-      location.href = "index.html";
+      location.href = "/";
     }
   });
   showIdentified(state.user);

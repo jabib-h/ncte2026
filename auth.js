@@ -203,7 +203,7 @@
     const u = currentUser();
     if (u) return u;
     const o = opts || {};
-    const target = o.redirect || "index.html";
+    const target = o.redirect || "/";
     // Hint the landing to open the auth modal in login mode
     try { sessionStorage.setItem("ncte_intent_auth", o.intent || "login"); } catch {}
     try { sessionStorage.setItem("ncte_intent_return", location.pathname + location.search); } catch {}
