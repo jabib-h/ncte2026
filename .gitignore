@@ -1,0 +1,17 @@
+# OneDrive / Windows artifacts
+.thumbnail
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Dependencies (in case Node is added later)
+node_modules/
+
+# Vercel local artifacts
+.vercel

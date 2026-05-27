@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Free Virtual Registration · NCTE 2026 · CCCN</title>
+<meta name="description" content="One free sign-up gives you access to every virtual session of NCTE 2026 — Day 1 plenaries (live stream) and the 6 Day 2 interactive webinars. All Zoom links delivered in a single email."/>
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="ncte.css"/>
+<style>
+  .nsub-header {
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .nsub-header .strip-flag { height: 4px; }
+  .nsub-header__bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0;
+  }
+  .nsub-header__logo {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none; color: inherit;
+  }
+  .nsub-header__logo .ribbon-globe { width: 40px; height: auto; }
+  .nsub-header__logo b {
+    font-family: var(--font-sans); font-weight: 800;
+    color: var(--cccn-blue-900); letter-spacing: .02em;
+    font-size: 17px; line-height: 1;
+  }
+  .nsub-header__logo span {
+    display: block; font-size: 10px; letter-spacing: .14em;
+    color: var(--muted); font-weight: 600; margin-top: 3px;
+  }
+  .nsub-header__back {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--cccn-blue-900); font-weight: 600;
+    text-decoration: none; font-size: 14px;
+    padding: 8px 14px; border-radius: 999px;
+    border: 1px solid var(--line);
+    transition: background .15s ease;
+  }
+  .nsub-header__back:hover { background: var(--cream); }
+
+  /* ============ HERO ============ */
+  .nwebr-hero {
+    padding: 64px 0 36px;
+    background: linear-gradient(180deg, #fff 0%, var(--cream) 100%);
+    text-align: center;
+  }
+  .nwebr-hero h1 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(34px, 5vw, 56px); line-height: 1.02;
+    color: var(--cccn-blue-900); letter-spacing: -.02em;
+    margin: 14px 0 18px;
+    text-wrap: balance;
+  }
+  .nwebr-hero h1 em { font-style: italic; color: var(--cccn-red); font-weight: 600; }
+  .nwebr-hero p {
+    max-width: 660px; margin: 0 auto;
+    color: var(--ink-2); font-size: 17px; line-height: 1.55;
+  }
+  .nwebr-hero__pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 999px;
+    background: rgba(238,48,78,.1); color: var(--cccn-red);
+    font-size: 12px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .nwebr-hero__pill .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--cccn-red);
+  }
+
+  /* ============ MAIN SPLIT: FORM + SCHEDULE ============ */
+  .nwebr-main { padding: 36px 0 80px; background: var(--cream); }
+  .nwebr-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: flex-start;
+  }
+  @media (max-width: 940px) { .nwebr-grid { grid-template-columns: 1fr; } }
+
+  /* ============ FORM CARD ============ */
+  .nwebr-form {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 22px 60px -30px rgba(4,26,113,.18);
+    position: sticky; top: 92px;
+  }
+  @media (max-width: 940px) { .nwebr-form { position: static; } }
+  .nwebr-form__eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11.5px; font-weight: 800; letter-spacing: .16em;
+    color: var(--cccn-blue-900); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .nwebr-form__eyebrow .check {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--cccn-red); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .nwebr-form h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 28px; line-height: 1.1;
+    color: var(--cccn-blue-900); margin: 4px 0 10px;
+    letter-spacing: -.015em;
+  }
+  .nwebr-form > p {
+    font-size: 14.5px; color: var(--ink-2); line-height: 1.55;
+    margin: 0 0 22px;
+  }
+  .nwebr-form__fields {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .nwebr-form__field { display: flex; flex-direction: column; gap: 6px; }
+  .nwebr-form__field.span2 { grid-column: span 2; }
+  .nwebr-form__field label {
+    font-size: 12px; font-weight: 700; letter-spacing: .04em;
+    color: var(--cccn-blue-900); text-transform: uppercase;
+  }
+  .nwebr-form__field input,
+  .nwebr-form__field select {
+    appearance: none; -webkit-appearance: none;
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font: inherit; font-size: 15px;
+    color: var(--ink); width: 100%;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .nwebr-form__field input:focus,
+  .nwebr-form__field select:focus {
+    outline: none;
+    border-color: var(--cccn-red);
+    box-shadow: 0 0 0 3px rgba(238,48,78,.16);
+  }
+  .nwebr-form__alert {
+    padding: 10px 14px; border-radius: 10px;
+    background: rgba(238,48,78,.08); color: var(--cccn-red-700);
+    font-size: 13px; font-weight: 600;
+    border: 1px solid rgba(238,48,78,.20); margin-top: 4px;
+  }
+  .nwebr-form__consent {
+    display: flex; align-items: flex-start; gap: 10px;
+    margin: 18px 0 4px;
+    font-size: 13px; color: var(--ink-2); line-height: 1.5;
+  }
+  .nwebr-form__consent input { margin-top: 3px; flex-shrink: 0; }
+  .nwebr-form__cta { margin-top: 14px; }
+  .nwebr-form__cta .btn { width: 100%; justify-content: center; }
+  .nwebr-form__note {
+    margin-top: 12px; padding-top: 14px;
+    border-top: 1px dashed var(--line);
+    font-size: 12.5px; color: var(--muted); line-height: 1.5;
+    text-align: center;
+  }
+  .nwebr-form__note strong { color: var(--cccn-blue-900); }
+
+  .nwebr-form__success {
+    display: none;
+    padding: 24px; border-radius: 14px;
+    background: linear-gradient(165deg, #E8F6EE 0%, #fff 100%);
+    border: 1px solid #BCE3C8;
+    text-align: center;
+  }
+  .nwebr-form__success.is-on { display: block; }
+  .nwebr-form__success svg {
+    width: 42px; height: 42px;
+    color: #1E8A4F; margin-bottom: 8px;
+  }
+  .nwebr-form__success h3 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 22px; color: var(--cccn-blue-900);
+    margin: 6px 0 8px;
+  }
+  .nwebr-form__success p {
+    font-size: 14px; color: var(--ink-2); line-height: 1.5; margin: 0;
+  }
+
+  /* ============ SCHEDULE LIST ============ */
+  .nwebr-sched__head {
+    margin-bottom: 18px;
+  }
+  .nwebr-sched__head small {
+    display: block;
+    font-size: 11px; font-weight: 800; letter-spacing: .18em;
+    color: var(--cccn-red); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .nwebr-sched__head h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 26px; color: var(--cccn-blue-900); margin: 0 0 8px;
+    letter-spacing: -.01em;
+  }
+  .nwebr-sched__head p {
+    font-size: 14px; color: var(--ink-2); margin: 0; line-height: 1.5;
+  }
+
+  .nwebr-day {
+    background: #fff; border-radius: 16px;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .nwebr-day__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--cccn-blue-900); color: #fff;
+  }
+  .nwebr-day__head small {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase; color: rgba(255,255,255,.65);
+    display: block; line-height: 1;
+  }
+  .nwebr-day__head strong {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 17px; line-height: 1.2;
+    display: block; margin-top: 4px;
+  }
+  .nwebr-day__chip {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(255,255,255,.13); color: #fff;
+  }
+  .nwebr-day.is-virtual .nwebr-day__head { background: var(--cccn-red); }
+
+  .nwebr-row {
+    display: grid;
+    grid-template-columns: 76px 1fr auto;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-top: 1px solid var(--line);
+  }
+  .nwebr-row:first-of-type { border-top: 0; }
+  .nwebr-row__time {
+    font-family: var(--font-sans); font-weight: 700;
+    font-size: 14px; color: var(--cccn-red);
+    letter-spacing: .01em;
+  }
+  .nwebr-row__main b {
+    display: block;
+    font-family: var(--font-sans); font-weight: 700;
+    font-size: 15px; color: var(--cccn-blue-900);
+    line-height: 1.25; margin-bottom: 2px;
+  }
+  .nwebr-row__main small {
+    display: block;
+    font-size: 12.5px; color: var(--muted); line-height: 1.45;
+  }
+  .nwebr-row__tag {
+    font-size: 10.5px; font-weight: 800; letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 5px 10px; border-radius: 999px;
+    background: rgba(4,26,113,.07); color: var(--cccn-blue-900);
+    white-space: nowrap;
+  }
+  .nwebr-row__tag.is-key { background: var(--cccn-red); color: #fff; }
+
+  .nwebr-prom {
+    margin-top: 24px;
+    padding: 22px 24px;
+    background: linear-gradient(135deg, #fff 0%, #FDE3E7 100%);
+    border-radius: 14px;
+    border: 1px solid var(--cccn-red-soft, #f7c5ce);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; flex-wrap: wrap;
+  }
+  .nwebr-prom h4 {
+    font-family: var(--font-sans); font-weight: 700;
+    font-size: 16px; color: var(--cccn-blue-900);
+    margin: 0 0 4px;
+  }
+  .nwebr-prom p {
+    font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5;
+  }
+
+  .nwebr-foot {
+    padding: 32px 0; text-align: center; color: var(--muted);
+    font-size: 13px; border-top: 1px solid var(--line); background: #fff;
+  }
+  .nwebr-foot a { color: var(--cccn-blue-900); font-weight: 600; }
+</style>
+</head>
+<body id="top">
+
+<header class="nsub-header">
+  <div class="strip-flag"></div>
+  <div class="container nsub-header__bar">
+    <a class="nsub-header__logo" href="index.html" aria-label="Back to home">
+      <img class="ribbon-globe" src="assets/ncte-globe-red.png" alt="NCTE" />
+      <span>
+        <b>NCTE</b>
+        <span>COSTA RICA</span>
+      </span>
+    </a>
+    <a class="nsub-header__back" href="index.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to home
+    </a>
+  </div>
+</header>
+
+<section class="nwebr-hero">
+  <div class="container">
+    <span class="nwebr-hero__pill"><span class="dot"></span> One sign-up · Full virtual program · Free</span>
+    <h1>Register <em>once</em>. Get <em>every</em> virtual session.</h1>
+    <p>A single free registration grants access to the entire virtual program — both Day 1 plenaries (live stream) and the 6 Day 2 interactive webinars. Everyone who signs up receives all the corresponding Zoom links in one confirmation email.</p>
+  </div>
+</section>
+
+<section class="nwebr-main">
+  <div class="container">
+    <div class="nwebr-grid">
+
+      <!-- Single registration form -->
+      <form class="nwebr-form" id="nwebr-form" novalidate>
+        <span class="nwebr-form__eyebrow">
+          <span class="check">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          One registration · all events
+        </span>
+        <h2>Get your free access</h2>
+        <p>Fill the form once and we'll email you a single confirmation with every Zoom link for the conference.</p>
+
+        <div class="nwebr-form__fields">
+          <div class="nwebr-form__field">
+            <label for="f-first">First name</label>
+            <input id="f-first" name="firstName" type="text" required autocomplete="given-name" placeholder="Ana"/>
+          </div>
+          <div class="nwebr-form__field">
+            <label for="f-last">Last name</label>
+            <input id="f-last" name="lastName" type="text" required autocomplete="family-name" placeholder="Rodríguez"/>
+          </div>
+          <div class="nwebr-form__field span2">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" required autocomplete="email" placeholder="you@school.cr"/>
+          </div>
+          <div class="nwebr-form__field">
+            <label for="f-country">Country</label>
+            <select id="f-country" name="country">
+              <option value="CR">Costa Rica</option>
+              <option value="NI">Nicaragua</option>
+              <option value="PA">Panama</option>
+              <option value="GT">Guatemala</option>
+              <option value="HN">Honduras</option>
+              <option value="SV">El Salvador</option>
+              <option value="MX">Mexico</option>
+              <option value="CO">Colombia</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div class="nwebr-form__field">
+            <label for="f-role">Role</label>
+            <select id="f-role" name="role">
+              <option value="teacher">English Teacher</option>
+              <option value="coordinator">Academic Coordinator</option>
+              <option value="trainee">Teacher in Training</option>
+              <option value="student">University Student</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="nwebr-form__field span2">
+            <label for="f-school">Institution</label>
+            <input id="f-school" name="institution" type="text" required autocomplete="organization" placeholder="School / university / institute"/>
+          </div>
+          <div class="nwebr-form__field span2">
+            <label for="f-phone">Phone</label>
+            <input id="f-phone" name="phone" type="tel" required autocomplete="tel" placeholder="+506 8888 8888"/>
+          </div>
+          <div class="nwebr-form__field">
+            <label for="f-pass">Password</label>
+            <input id="f-pass" name="password" type="password" required autocomplete="new-password" placeholder="At least 8 chars · letters + numbers" minlength="8"/>
+          </div>
+          <div class="nwebr-form__field">
+            <label for="f-pass2">Confirm password</label>
+            <input id="f-pass2" name="passwordConfirm" type="password" required autocomplete="new-password" placeholder="Repeat password" minlength="8"/>
+          </div>
+        </div>
+
+        <div class="nwebr-form__alert" id="nwebr-error" role="alert" style="display:none;"></div>
+
+        <label class="nwebr-form__consent">
+          <input type="checkbox" name="consent" required/>
+          <span>I agree to receive my Zoom links and NCTE 2026 updates by email from CCCN. No spam — only conference logistics.</span>
+        </label>
+
+        <div class="nwebr-form__cta">
+          <button type="submit" class="btn btn-primary">
+            Register for free →
+          </button>
+        </div>
+
+        <div class="nwebr-form__note">
+          <strong>One sign-up unlocks the full virtual program.</strong><br/>
+          No card required. You'll receive all Zoom links in a single confirmation email.
+        </div>
+
+        <div class="nwebr-form__success" id="nwebr-success" role="status" aria-live="polite">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <h3>You're in.</h3>
+          <p>Check your inbox for one confirmation email with every Zoom link for the conference. See you in July.</p>
+        </div>
+      </form>
+
+      <!-- Schedule (informational only — no per-session register buttons) -->
+      <div class="nwebr-sched">
+        <div class="nwebr-sched__head">
+          <small>What your free registration includes</small>
+          <h2>The full virtual program</h2>
+          <p>Two days, every session — delivered to your inbox after you register.</p>
+        </div>
+
+        <div class="nwebr-day">
+          <div class="nwebr-day__head">
+            <div>
+              <small>Day 1 · Live stream</small>
+              <strong>Wednesday, July 8</strong>
+            </div>
+            <span class="nwebr-day__chip">Plenaries</span>
+          </div>
+          <div class="nwebr-row">
+            <div class="nwebr-row__time">9:00 am</div>
+            <div class="nwebr-row__main">
+              <b>Opening Keynote · Max Bigman</b>
+              <small>AI and the new pedagogy of ELT · Stanford GSE 🇺🇸</small>
+            </div>
+            <span class="nwebr-row__tag is-key">Plenary</span>
+          </div>
+          <div class="nwebr-row">
+            <div class="nwebr-row__time">2:00 pm</div>
+            <div class="nwebr-row__main">
+              <b>Afternoon Plenary · Junuen Mondragón</b>
+              <small>Human connections in the digital classroom · 🇲🇽 Mexico</small>
+            </div>
+            <span class="nwebr-row__tag is-key">Plenary</span>
+          </div>
+        </div>
+
+        <div class="nwebr-day is-virtual">
+          <div class="nwebr-day__head">
+            <div>
+              <small>Day 2 · Virtual</small>
+              <strong>Thursday, July 9</strong>
+            </div>
+            <span class="nwebr-day__chip">6 Webinars</span>
+          </div>
+
+          <div class="nwebr-row">
+            <div class="nwebr-row__time">8:00 am</div>
+            <div class="nwebr-row__main">
+              <b>Nik Peachey</b>
+              <small>Teaching Best Practices · 90-min interactive session · 🇬🇧 UK</small>
+            </div>
+            <span class="nwebr-row__tag">Webinar 01</span>
+          </div>
+          <div class="nwebr-row">
+            <div class="nwebr-row__time">10:00 am</div>
+            <div class="nwebr-row__main">
+              <b>Lucian Alexandrín</b>
+              <small><em>"Teaching for Global Citizenship in the Age of AI"</em> · Inclusive Education · 🇺🇸 US</small>
+            </div>
+            <span class="nwebr-row__tag">Webinar 02</span>
+          </div>
+          <div class="nwebr-row">
+            <div class="nwebr-row__time">12:00 pm</div>
+            <div class="nwebr-row__main">
+              <b>Sara Rehman</b>
+              <small><em>"Human Centered AI: Balancing Innovation and Authentic Learning"</em> · Moving Forward · 🇺🇸 US</small>
+            </div>
+            <span class="nwebr-row__tag">Webinar 03</span>
+          </div>
+          <div class="nwebr-row">
+            <div class="nwebr-row__time">2:00 pm</div>
+            <div class="nwebr-row__main">
+              <b>Betsy Parrish</b>
+              <small>Gamification &amp; storytelling for Young Learners · 🇺🇸 US</small>
+            </div>
+            <span class="nwebr-row__tag">Webinar 04</span>
+          </div>
+          <div class="nwebr-row">
+            <div class="nwebr-row__time">4:00 pm</div>
+            <div class="nwebr-row__main">
+              <b>Mitchel Resnick</b>
+              <small>AI and autonomous learning in the English classroom · MIT Media Lab 🇺🇸</small>
+            </div>
+            <span class="nwebr-row__tag">Webinar 05</span>
+          </div>
+          <div class="nwebr-row">
+            <div class="nwebr-row__time">6:00 pm</div>
+            <div class="nwebr-row__main">
+              <b>Laura Baecher · Closing</b>
+              <small>Communities of Practice · Hunter College, CUNY · 🇺🇸 US</small>
+            </div>
+            <span class="nwebr-row__tag is-key">Closing</span>
+          </div>
+        </div>
+
+        <div class="nwebr-prom">
+          <div style="flex: 1 1 280px;">
+            <h4>Prefer the in-person Day 1?</h4>
+            <p>The Wednesday in-person pass at CCCN Los Yoses includes both plenaries, all concurrent sessions, networking and Day 2 virtual access.</p>
+          </div>
+          <a class="btn btn-dark" href="registro-presencial.html">See in-person pass →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="nwebr-foot">
+  <div class="container">
+    © 2026 CCCN · National Conference for Teachers of English Costa Rica ·
+    <a href="index.html">Back to NCTE 2026</a>
+  </div>
+</footer>
+
+<script src="auth.js"></script>
+<script>
+  (function () {
+    const form    = document.getElementById('nwebr-form');
+    const success = document.getElementById('nwebr-success');
+    const errorEl = document.getElementById('nwebr-error');
+    if (!form) return;
+
+    function showHeroSuccess(user) {
+      form.querySelectorAll('.nwebr-form__fields, .nwebr-form__consent, .nwebr-form__cta, .nwebr-form__note, .nwebr-form__alert, h2, > p').forEach(el => {
+        if (el) el.style.display = 'none';
+      });
+      const display = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email;
+      const p = success.querySelector('p');
+      if (p) p.textContent = 'You’re registered as ' + display + '. Check your inbox for the Zoom links.';
+      success.classList.add('is-on');
+      success.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+    }
+
+    // If the user is already registered in this browser, skip the form entirely.
+    const existing = window.NCTEAuth && window.NCTEAuth.currentUser();
+    if (existing) { showHeroSuccess(existing); return; }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorEl.style.display = 'none';
+      errorEl.textContent = '';
+      // Reset prior error highlights
+      form.querySelectorAll('input, select').forEach(el => { el.style.borderColor = ''; });
+
+      const fd = new FormData(form);
+      const submitBtn = form.querySelector('button[type=submit]');
+      const originalLabel = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Registering…';
+
+      try {
+        const user = await window.NCTEAuth.register({
+          firstName:       fd.get('firstName'),
+          lastName:        fd.get('lastName'),
+          email:           fd.get('email'),
+          phone:           fd.get('phone'),
+          institution:     fd.get('institution'),
+          role:            fd.get('role'),
+          country:         fd.get('country'),
+          password:        fd.get('password'),
+          passwordConfirm: fd.get('passwordConfirm'),
+          consent:         fd.get('consent') === 'on' || fd.get('consent') === 'true',
+        });
+        showHeroSuccess(user);
+      } catch (err) {
+        if (err && err.fields) {
+          Object.keys(err.fields).forEach(name => {
+            const el = form.querySelector('[name="' + name + '"]');
+            if (el) el.style.borderColor = 'var(--cccn-red)';
+          });
+        }
+        errorEl.textContent = (err && err.message) || 'Something went wrong. Please try again.';
+        errorEl.style.display = '';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalLabel;
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>NCTE 2026 · National Conference for Teachers of English · CCCN</title>
+<meta name="description" content="41st edition of the National Conference for Teachers of English — Costa Rica. July 8 & 9, 2026. Empowering ELT: Digital Shifts, Human Connections, & Impactful AI Use."/>
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="ncte.css"/>
+<style>
+/* ============ PRINT-OPTIMIZED OVERRIDES ============ */
+:root { --max-w: 100%; }
+
+html, body {
+  background: #fff !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* Container = full page minus margins */
+.container { max-width: 1080px; padding: 0 24px; }
+
+/* Disable sticky + remove auth modal entirely */
+.ncte-header { position: static !important; box-shadow: none; }
+.nmodal, [data-ncte-modal], .nmnav, .ncte-header__menu { display: none !important; }
+
+/* Kill animations — print is static */
+* {
+  animation: none !important;
+  transition: none !important;
+}
+.nhero__art .ribbon-globe { transform: none !important; }
+
+/* Force color blocks to render in print */
+.nhero, .nquick, .section-cream, .nsponsors, .ncfp, .ncta, .nfooter,
+.nsched__head, .nabout__stat, .nstrand__icon, .nformat__card,
+.nprice__tag, .nspk__media {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* Tighten vertical rhythm for print */
+.section { padding: 36px 0 !important; }
+.nhero__grid { padding: 36px 0 !important; }
+
+/* Hide things that only make sense online */
+.nhero__orbital,
+[data-auth-open],
+.ncte-header__lang,
+.ncte-header__user,
+.ncte-header__cta .btn-primary,
+.nspk__more,
+.ncfp .nf__cta,
+.nprice__cta,
+.nformat__card .nf__cta {
+  display: none !important;
+}
+
+/* Header simplified for the printed first page */
+.ncte-header__bar { padding: 16px 0; }
+.ncte-header__nav { display: none; }
+
+/* Page breaks ------------------------------------ */
+section {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+section[id="about"],
+section[id="schedule"],
+section[id="strands"],
+section[id="speakers"],
+section[id="format"],
+section[id="register"],
+section[id="cfp"],
+section[id="sponsors"],
+section[id="faq"] {
+  break-before: page;
+  page-break-before: always;
+}
+
+/* Schedule day cards — keep each day together; allow split between days */
+.nsched__day { break-inside: avoid; page-break-inside: avoid; }
+.nsched__days { display: grid; grid-template-columns: 1fr 1fr !important; gap: 16px !important; }
+.nsched__row { padding: 10px 16px !important; }
+.nsched__head { padding: 18px 22px !important; }
+.nsched__head strong { font-size: 22px !important; }
+
+/* Strand cards */
+.nstrands__grid { grid-template-columns: repeat(5, 1fr) !important; gap: 10px !important; }
+.nstrand { min-height: 0 !important; padding: 18px 16px !important; }
+.nstrand h3 { font-size: 14px !important; }
+.nstrand p { font-size: 12px !important; }
+.nstrand ul { font-size: 11.5px !important; }
+.nstrand__num { font-size: 28px !important; }
+
+/* Speakers grid */
+.nspk__grid { grid-template-columns: repeat(4, 1fr) !important; gap: 14px !important; }
+.nspk { break-inside: avoid; }
+.nspk__avatar { font-size: 44px !important; }
+
+/* Pricing */
+.npricing__grid { grid-template-columns: repeat(3, 1fr) !important; gap: 14px !important; }
+.nprice { padding: 22px !important; }
+.nprice__price b { font-size: 42px !important; }
+
+/* Format */
+.nformat__grid { grid-template-columns: 1fr 1fr !important; gap: 14px !important; }
+.nformat__card { padding: 26px !important; }
+
+/* FAQ — print all answers open */
+.nfaq__item .nfaq__a {
+  max-height: none !important;
+  padding: 0 24px 18px !important;
+}
+.nfaq__q { padding: 16px 24px !important; }
+.nfaq__q svg { display: none !important; }
+.nfaq__item { break-inside: avoid; }
+.nfaq { grid-template-columns: 1fr 1.4fr !important; gap: 32px !important; }
+
+/* Final CTA */
+.ncta { padding: 48px 0 !important; }
+
+/* Footer slim */
+.nfooter { padding: 36px 0 16px !important; }
+.nfooter__brand p { font-size: 12px !important; }
+.nfooter__list { font-size: 12.5px !important; }
+
+/* Anchors should not be blue-underlined in print */
+a { color: inherit; text-decoration: none; }
+
+/* Reduce hero height — fits one printed page */
+.nhero__title { font-size: 48px !important; line-height: .98 !important; }
+.nhero__lede { font-size: 14.5px !important; }
+.nhero__meta strong { font-size: 17px !important; }
+.nhero .btn-primary, .nhero .btn-ghost-light { display: none !important; }
+
+/* Quick info bar — keep below hero on same page */
+.nquick { padding: 18px 0 !important; }
+.nquick__item strong { font-size: 14px !important; }
+
+@media print {
+  @page { size: A4 portrait; margin: 10mm; }
+
+  body { font-size: 12px; }
+
+  /* Avoid orphaned headings */
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+
+  /* Section eyebrows tighter */
+  .section-eyebrow { margin-bottom: 8px; }
+
+  /* Compact the visible hero artwork on print */
+  .nhero__art .ribbon-globe { width: 260px !important; }
+
+  /* Stats grid 2x2 stays */
+  .nabout__stats { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+  .nabout__stat { padding: 18px !important; }
+  .nabout__stat strong { font-size: 40px !important; }
+}
+</style>
+</head>
+<body id="top">
+
+<div data-ncte-header></div>
+<div data-ncte-modal></div>
+
+<!-- ============ HERO ============ -->
+<section class="nhero" data-screen-label="01 Hero">
+  <div class="container nhero__grid">
+    <div>
+      <span class="nhero__edition">
+        <strong>41st EDITION</strong>
+        Since 1984
+      </span>
+      <h1 class="nhero__title">
+        Empowering <b>ELT:</b><br/>
+        <em>Digital Shifts,</em><br/>
+        Human Connections, &amp; Impactful AI Use
+      </h1>
+      <p class="nhero__lede">
+        El congreso nacional para profesores de inglés más importante de Costa Rica regresa
+        en formato híbrido: 20 horas de desarrollo profesional, sesiones presenciales,
+        ponencias plenarias y 6 webinars interactivos en vivo.
+      </p>
+      <div class="nhero__meta">
+        <div>
+          <small>FECHAS</small>
+          <strong>8 y 9 · Julio 2026</strong>
+        </div>
+        <div>
+          <small>SEDE</small>
+          <strong>CCCN Los Yoses, San José</strong>
+        </div>
+        <div>
+          <small>FORMATO</small>
+          <strong>Híbrido · Presencial + Virtual</strong>
+        </div>
+      </div>
+      <div class="nhero__ctas">
+        <a class="btn btn-primary" href="#register">Registrarme al congreso</a>
+        <a class="btn-ghost-light" href="#schedule">Ver programa</a>
+      </div>
+    </div>
+    <div class="nhero__art">
+      <img class="ribbon-globe" src="assets/ncte-globe-red.png" alt="NCTE" />
+      <div class="nhero__orbital">
+        <div class="dot"></div>
+        <div>
+          <b>Open call</b>
+          <span>Convocatoria de ponentes abierta hasta el 28 de febrero, 2026.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="strip-flag nhero__flag"></div>
+</section>
+
+<!-- ============ QUICK BAR ============ -->
+<section class="nquick">
+  <div class="container nquick__grid">
+    <div class="nquick__item">
+      <div class="nquick__icn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      </div>
+      <div>
+        <small>20 horas de PD</small>
+        <strong>2 días de contenido<br/>en formato híbrido</strong>
+      </div>
+    </div>
+    <div class="nquick__item">
+      <div class="nquick__icn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <div>
+        <small>UBICACIÓN</small>
+        <strong>CCCN Los Yoses<br/>San Pedro, Costa Rica</strong>
+      </div>
+    </div>
+    <div class="nquick__item">
+      <div class="nquick__icn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div>
+        <small>COMUNIDAD ELT</small>
+        <strong>+1,200 docentes esperados<br/>de toda la región</strong>
+      </div>
+    </div>
+    <div class="nquick__item">
+      <div class="nquick__icn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 13a10 10 0 0 1 14 0M2 9a14 14 0 0 1 20 0M8.5 16.5a5 5 0 0 1 7 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
+      </div>
+      <div>
+        <small>DÍA 2 VIRTUAL</small>
+        <strong>6 webinars en vivo<br/>gratuitos para docentes</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="section" id="about" data-screen-label="02 Acerca">
+  <div class="container nabout__grid">
+    <div>
+      <span class="section-eyebrow">Acerca del congreso</span>
+      <h2 class="h-1">El espacio donde la enseñanza del inglés se <em>reinventa</em>.</h2>
+      <p class="body mt-3">
+        Desde 1984, el <strong>National Conference for Teachers of English Costa Rica</strong> es la
+        plataforma decana en la región para promover prácticas innovadoras en la enseñanza del
+        idioma inglés. Reúne docentes del sector público y privado de Costa Rica y de todo el
+        mundo en un espacio único de intercambio profesional.
+      </p>
+      <p class="body">
+        En esta <strong>41a edición</strong> abordamos los cambios profundos que la era de la inteligencia
+        artificial está generando en la educación. Exploraremos cómo integrar la IA al aula de
+        inglés de forma que fortalezca el pensamiento crítico, la adquisición del idioma y la
+        pedagogía inclusiva — sin perder la <em>esencia humana</em> de la enseñanza.
+      </p>
+      <div class="row mt-3" style="gap:24px;">
+        <a class="btn-link" href="#strands">Ver los 5 strands temáticos <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+    <div class="nabout__stats">
+      <div class="nabout__stat">
+        <strong>41<sup style="font-size:.45em;">a</sup></strong>
+        <span>edición consecutiva del congreso, ininterrumpido desde 1984.</span>
+      </div>
+      <div class="nabout__stat">
+        <strong>20h</strong>
+        <span>de desarrollo profesional certificado a lo largo de 2 días.</span>
+      </div>
+      <div class="nabout__stat">
+        <strong>+50</strong>
+        <span>sesiones, talleres y webinars con ponentes nacionales e internacionales.</span>
+      </div>
+      <div class="nabout__stat">
+        <strong>1,200+</strong>
+        <span>docentes participantes esperados, presencial y virtual.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCHEDULE ============ -->
+<section class="section section-cream" id="schedule" data-screen-label="03 Programa">
+  <div class="container">
+    <div class="t-center">
+      <span class="section-eyebrow center">El programa</span>
+      <h2 class="h-1">Dos días. <em>Un congreso completo.</em></h2>
+      <p class="lede mt-2" style="margin-inline:auto;">
+        Día 1 en formato presencial en San Pedro: ceremonias, plenarias, sesiones concurrentes y
+        espacios de networking. Día 2 completamente virtual: 6 webinars interactivos en vivo.
+      </p>
+    </div>
+
+    <div class="nsched__days mt-5">
+      <!-- DAY 1 -->
+      <div class="nsched__day">
+        <div class="nsched__head">
+          <div>
+            <small>DAY 1 · 9:00 a.m. – 6:00 p.m.</small>
+            <strong>Martes 8 de Julio</strong>
+          </div>
+          <span class="nsched__chip">PRESENCIAL · SAN PEDRO</span>
+        </div>
+        <div class="nsched__list">
+          <div class="nsched__row">
+            <div class="nsched__time">9:00 am</div>
+            <div>
+              <b>Opening Ceremony</b>
+              <span>Apertura oficial con autoridades del CCCN y la Embajada de EE.UU.</span>
+            </div>
+            <span class="nsched__tag is-key">Keynote</span>
+          </div>
+          <div class="nsched__row">
+            <div class="nsched__time">9:30 am</div>
+            <div>
+              <b>Morning Plenary Talk</b>
+              <span>Conferencia magistral inaugural sobre IA y didáctica.</span>
+            </div>
+            <span class="nsched__tag is-key">Plenary</span>
+          </div>
+          <div class="nsched__divider"></div>
+          <div class="nsched__row">
+            <div class="nsched__time">10:30 am</div>
+            <div>
+              <b>Coffee Break</b>
+              <span>Café, networking y visita a stands de editoriales.</span>
+            </div>
+            <span class="nsched__tag is-break">Break</span>
+          </div>
+          <div class="nsched__row">
+            <div class="nsched__time">11:00 am</div>
+            <div>
+              <b>Morning Concurrent Sessions</b>
+              <span>6 aulas simultáneas — workshops y ponencias de 90 min.</span>
+            </div>
+            <span class="nsched__tag">Sessions</span>
+          </div>
+          <div class="nsched__divider"></div>
+          <div class="nsched__row">
+            <div class="nsched__time">12:30 pm</div>
+            <div>
+              <b>Lunch Break</b>
+              <span>Almuerzo libre (no incluido). Sugerencias en Los Yoses.</span>
+            </div>
+            <span class="nsched__tag is-break">Break</span>
+          </div>
+          <div class="nsched__row">
+            <div class="nsched__time">2:00 pm</div>
+            <div>
+              <b>Afternoon Plenary Talk</b>
+              <span>Segunda magistral del día — conexiones humanas en el aula digital.</span>
+            </div>
+            <span class="nsched__tag is-key">Plenary</span>
+          </div>
+          <div class="nsched__divider"></div>
+          <div class="nsched__row">
+            <div class="nsched__time">3:30 pm</div>
+            <div>
+              <b>Afternoon Coffee Break</b>
+              <span>Recarga y networking de tarde.</span>
+            </div>
+            <span class="nsched__tag is-break">Break</span>
+          </div>
+          <div class="nsched__row">
+            <div class="nsched__time">4:00 pm</div>
+            <div>
+              <b>Afternoon Concurrent Sessions</b>
+              <span>6 aulas simultáneas — segundo bloque de talleres.</span>
+            </div>
+            <span class="nsched__tag">Sessions</span>
+          </div>
+          <div class="nsched__divider"></div>
+          <div class="nsched__row">
+            <div class="nsched__time">5:30 pm</div>
+            <div>
+              <b>Networking &amp; Raffles</b>
+              <span>Rifas de las editoriales y espacio social.</span>
+            </div>
+            <span class="nsched__tag is-net">Social</span>
+          </div>
+          <div class="nsched__row">
+            <div class="nsched__time">6:00 pm</div>
+            <div>
+              <b>Cocktail for Presenters &amp; Sponsors</b>
+              <span>Evento privado de cierre del Día 1.</span>
+            </div>
+            <span class="nsched__tag is-net">VIP</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 2 -->
+      <div class="nsched__day">
+        <div class="nsched__head">
+          <div>
+            <small>DAY 2 · 8:00 a.m. – 7:30 p.m.</small>
+            <strong>Miércoles 9 de Julio</strong>
+          </div>
+          <span class="nsched__chip">VIRTUAL · 6 WEBINARS</span>
+        </div>
+        <div class="nsched__list">
+          <div class="nsched__row">
+            <div class="nsched__time">8:00 am</div>
+            <div>
+              <b>Interactive Webinar 1</b>
+              <span>Teaching Best Practices · Concurrent strand</span>
+            </div>
+            <span class="nsched__tag">Webinar</span>
+          </div>
+          <div class="nsched__row">
+            <div class="nsched__time">10:00 am</div>
+            <div>
+              <b>Interactive Webinar 2</b>
+              <span>Assessment · CEFR &amp; rubric creation</span>
+            </div>
+            <span class="nsched__tag">Webinar</span>
+          </div>
+          <div class="nsched__row">
+            <div class="nsched__time">12:00 pm</div>
+            <div>
+              <b>Interactive Webinar 3</b>
+              <span>Inclusive Education · UDL y SEL</span>
+            </div>
+            <span class="nsched__tag">Webinar</span>
+          </div>
+          <div class="nsched__divider"></div>
+          <div class="nsched__row">
+            <div class="nsched__time">2:00 pm</div>
+            <div>
+              <b>Interactive Webinar 4</b>
+              <span>Young Learners · Gamificación y storytelling</span>
+            </div>
+            <span class="nsched__tag">Webinar</span>
+          </div>
+          <div class="nsched__row">
+            <div class="nsched__time">4:00 pm</div>
+            <div>
+              <b>Interactive Webinar 5</b>
+              <span>Moving Forward · IA y aprendizaje autónomo</span>
+            </div>
+            <span class="nsched__tag">Webinar</span>
+          </div>
+          <div class="nsched__row">
+            <div class="nsched__time">6:00 pm</div>
+            <div>
+              <b>Interactive Webinar 6</b>
+              <span>Cierre del congreso · Communities of Practice</span>
+            </div>
+            <span class="nsched__tag is-key">Closing</span>
+          </div>
+          <div class="nsched__divider"></div>
+          <div style="padding: 20px; text-align: center;">
+            <p class="small" style="margin: 0 0 12px;">Cada webinar dura 90 minutos · audiencia 150–200 docentes en vivo.</p>
+            <a class="btn btn-dark" href="#register">Asegurar mi acceso</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="small t-center mt-4">
+      La programación detallada por aula y ponente se publicará el <strong>15 de mayo de 2026</strong>.
+      Las personas registradas recibirán acceso anticipado al planificador personal.
+    </p>
+  </div>
+</section>
+
+<!-- ============ THEMATIC STRANDS ============ -->
+<section class="section" id="strands" data-screen-label="04 Strands">
+  <div class="container">
+    <div class="t-center">
+      <span class="section-eyebrow center">Líneas temáticas</span>
+      <h2 class="h-1">5 <em>strands</em> que articulan el congreso.</h2>
+      <p class="lede mt-2" style="margin-inline:auto;">
+        Todas las ponencias, talleres y webinars responden a uno de estos cinco ejes —
+        diseñados con el comité organizador para reflejar las urgencias y oportunidades
+        actuales del ELT en la región.
+      </p>
+    </div>
+
+    <div class="nstrands__grid mt-5">
+      <article class="nstrand">
+        <div class="nstrand__num">01</div>
+        <div class="nstrand__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5H6.5A2.5 2.5 0 0 0 4 19.5z"/></svg>
+        </div>
+        <h3>Teaching Best Practices</h3>
+        <p>Estrategias innovadoras y comprobadas para enseñanza de inglés de alta calidad.</p>
+        <ul>
+          <li>Lesson planning &amp; 4 skills</li>
+          <li>Scaffolding &amp; flipped learning</li>
+          <li>21st-century skills</li>
+          <li>Feedback en la era digital</li>
+        </ul>
+      </article>
+
+      <article class="nstrand">
+        <div class="nstrand__num">02</div>
+        <div class="nstrand__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
+        </div>
+        <h3>Assessment</h3>
+        <p>Herramientas y prácticas para observar y medir el progreso lingüístico real.</p>
+        <ul>
+          <li>Pruebas estandarizadas</li>
+          <li>CEFR awareness</li>
+          <li>Evaluación formativa</li>
+          <li>Certificación docente</li>
+        </ul>
+      </article>
+
+      <article class="nstrand">
+        <div class="nstrand__num">03</div>
+        <div class="nstrand__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3>Inclusive Education</h3>
+        <p>Casos y estrategias para hacer del aula de inglés un lugar más inclusivo.</p>
+        <ul>
+          <li>Social Emotional Learning</li>
+          <li>UDL en el aula</li>
+          <li>Ciudadanía digital y global</li>
+          <li>Contextos de baja conectividad</li>
+        </ul>
+      </article>
+
+      <article class="nstrand">
+        <div class="nstrand__num">04</div>
+        <div class="nstrand__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h4l2-2h2l2 2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/><circle cx="12" cy="13" r="3"/></svg>
+        </div>
+        <h3>Teaching Young Learners</h3>
+        <p>Estrategias prácticas para niños de preescolar y primaria aprendiendo inglés.</p>
+        <ul>
+          <li>Phonemic awareness</li>
+          <li>Storytelling &amp; reading</li>
+          <li>Gamificación</li>
+          <li>Engagement a través de pantalla</li>
+        </ul>
+      </article>
+
+      <article class="nstrand">
+        <div class="nstrand__num">05</div>
+        <div class="nstrand__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3 3 3 0 0 0 3-3V8a3 3 0 0 0-3-3z"/><path d="M9 8a3 3 0 0 1-3 3v2a3 3 0 0 1 3 3M15 8a3 3 0 0 0 3 3v2a3 3 0 0 0-3 3"/></svg>
+        </div>
+        <h3>Moving Forward</h3>
+        <p>Aprendizajes, retos y oportunidades para la educación docente del siglo XXI.</p>
+        <ul>
+          <li>IA en el aprendizaje</li>
+          <li>Autonomía en entornos híbridos</li>
+          <li>Action research</li>
+          <li>Communities of Practice</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPEAKERS ============ -->
+<section class="section section-cream" id="speakers" data-screen-label="05 Ponentes">
+  <div class="container">
+    <div class="t-center">
+      <span class="section-eyebrow center">Ponentes destacados</span>
+      <h2 class="h-1">Voces que están moldeando el <em>futuro del ELT</em>.</h2>
+      <p class="lede mt-2" style="margin-inline:auto;">
+        Una selección preliminar de los ponentes principales. La lista completa de más de
+        50 presentadores se publicará progresivamente.
+      </p>
+    </div>
+
+    <div class="nspk__grid mt-5">
+      <article class="nspk">
+        <div class="nspk__media">
+          <span class="nspk__strand">Moving Forward</span>
+          <div class="nspk__avatar">JM</div>
+        </div>
+        <div class="nspk__body">
+          <b>Dr. Jenny Mendoza</b>
+          <small>Keynote · Universidad de Costa Rica</small>
+          <span class="nspk__flag cr"><i></i> Costa Rica</span>
+        </div>
+      </article>
+
+      <article class="nspk">
+        <div class="nspk__media">
+          <span class="nspk__strand">Best Practices</span>
+          <div class="nspk__avatar">RB</div>
+        </div>
+        <div class="nspk__body">
+          <b>Rachel Brown, M.Ed.</b>
+          <small>Plenary · TESOL International</small>
+          <span class="nspk__flag us"><i></i> Estados Unidos</span>
+        </div>
+      </article>
+
+      <article class="nspk">
+        <div class="nspk__media">
+          <span class="nspk__strand">Assessment</span>
+          <div class="nspk__avatar">CA</div>
+        </div>
+        <div class="nspk__body">
+          <b>Carlos Aguilar</b>
+          <small>Workshop · Cambridge English</small>
+          <span class="nspk__flag uk"><i></i> Reino Unido</span>
+        </div>
+      </article>
+
+      <article class="nspk">
+        <div class="nspk__media">
+          <span class="nspk__strand">Inclusive Ed</span>
+          <div class="nspk__avatar">LP</div>
+        </div>
+        <div class="nspk__body">
+          <b>Luísa Peña</b>
+          <small>Webinar · INACAP</small>
+          <span class="nspk__flag co"><i></i> Colombia</span>
+        </div>
+      </article>
+
+      <article class="nspk">
+        <div class="nspk__media">
+          <span class="nspk__strand">Young Learners</span>
+          <div class="nspk__avatar">MV</div>
+        </div>
+        <div class="nspk__body">
+          <b>Marisol Vargas</b>
+          <small>Workshop · Editorial Pearson</small>
+          <span class="nspk__flag mx"><i></i> México</span>
+        </div>
+      </article>
+
+      <article class="nspk">
+        <div class="nspk__media">
+          <span class="nspk__strand">Moving Forward</span>
+          <div class="nspk__avatar">DT</div>
+        </div>
+        <div class="nspk__body">
+          <b>Dr. Diego Torres</b>
+          <small>Plenary · British Council</small>
+          <span class="nspk__flag ar"><i></i> Argentina</span>
+        </div>
+      </article>
+
+      <article class="nspk">
+        <div class="nspk__media">
+          <span class="nspk__strand">Best Practices</span>
+          <div class="nspk__avatar">AS</div>
+        </div>
+        <div class="nspk__body">
+          <b>Ana Souza</b>
+          <small>Concurrent · Macmillan Education</small>
+          <span class="nspk__flag br"><i></i> Brasil</span>
+        </div>
+      </article>
+
+      <article class="nspk">
+        <div class="nspk__media">
+          <span class="nspk__strand">Assessment</span>
+          <div class="nspk__avatar">MK</div>
+        </div>
+        <div class="nspk__body">
+          <b>Michael Kim</b>
+          <small>Workshop · ETS TOEFL</small>
+          <span class="nspk__flag us"><i></i> Estados Unidos</span>
+        </div>
+      </article>
+    </div>
+
+    <div class="nspk__more">
+      <a class="btn btn-ghost" href="#">Ver todos los ponentes (próximamente)</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMAT / VENUE ============ -->
+<section class="section" id="format" data-screen-label="06 Formato">
+  <div class="container">
+    <div class="t-center" style="max-width:680px; margin: 0 auto 48px;">
+      <span class="section-eyebrow center">El formato híbrido</span>
+      <h2 class="h-1">Lo mejor de la <em>presencialidad</em> y la <em>flexibilidad</em> virtual.</h2>
+    </div>
+
+    <div class="nformat__grid">
+      <article class="nformat__card is-inperson">
+        <div class="nf__icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>Concurrent Sessions<br/>presenciales</h3>
+        <p>Sesiones de 90 minutos con 20–40 asistentes, en la sede CCCN Los Yoses (San José). Audiencias pequeñas, énfasis en práctica real de aula.</p>
+        <ul class="nformat__list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Proyector, sonido, mesas y WiFi en cada aula</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Stands de editoriales, networking, rifas</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Plenary talks con ponentes internacionales</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Coffee breaks &amp; cocktail de cierre</li>
+        </ul>
+        <div class="nf__cta">
+          <a class="btn btn-primary" href="#register" style="background:#fff; color:var(--cccn-red);">Registrarme al presencial</a>
+        </div>
+      </article>
+
+      <article class="nformat__card is-virtual">
+        <div class="nf__icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 13a10 10 0 0 1 14 0M2 9a14 14 0 0 1 20 0M8.5 16.5a5 5 0 0 1 7 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
+        </div>
+        <h3>Interactive Webinars<br/>virtuales</h3>
+        <p>6 webinars en vivo con audiencias de 150–200 personas. Polls, chat, breakout rooms y colaboración en tiempo real con docentes de todo el mundo.</p>
+        <ul class="nformat__list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Participación 100% gratuita en virtual</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Sesiones grabadas para revisitarlas</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Certificado opcional por horas asistidas</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Acceso vía plataforma propia + Zoom</li>
+        </ul>
+        <div class="nf__cta">
+          <a class="btn btn-dark" href="#register">Registrarme al virtual (gratis)</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING / REGISTRATION ============ -->
+<section class="section section-cream" id="register" data-screen-label="07 Registro">
+  <div class="container">
+    <div class="t-center" style="max-width: 720px; margin: 0 auto 48px;">
+      <span class="section-eyebrow center">Inscripción</span>
+      <h2 class="h-1">Asegurá tu lugar en NCTE 2026</h2>
+      <p class="lede mt-2" style="margin-inline:auto;">
+        Tarifas Early Bird vigentes hasta el <strong>30 de abril, 2026</strong>. Descuentos
+        especiales para grupos de 5+ docentes de la misma institución y para estudiantes en
+        formación.
+      </p>
+    </div>
+
+    <div class="npricing__grid">
+      <div class="nprice is-virtual">
+        <span class="nprice__tag">Solo virtual</span>
+        <h3>Pase Virtual</h3>
+        <div class="nprice__price">
+          <b>$0</b>
+          <small>/ acceso a 6 webinars</small>
+        </div>
+        <ul class="nprice__list">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Acceso a 6 webinars en vivo (Día 2)</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Q&amp;A en vivo con ponentes</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Materiales descargables</li>
+          <li style="color: var(--muted);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);"><path d="M20 6 9 17l-5-5"/></svg> <span>Certificado: $15 adicionales</span></li>
+        </ul>
+        <div class="nprice__cta">
+          <button class="btn btn-dark" type="button" data-auth-open>Crear cuenta gratis</button>
+        </div>
+        <p class="nprice__note">No requiere tarjeta. Solo correo electrónico.</p>
+      </div>
+
+      <div class="nprice is-featured">
+        <span class="nprice__tag">Más popular · Early Bird</span>
+        <h3>Pase Presencial</h3>
+        <div class="nprice__price">
+          <b>$95</b>
+          <small>/ docente · 2 días híbridos</small>
+        </div>
+        <div style="font-size: 13px; color: var(--muted);">
+          <del>$120</del> regular · ahorrás $25
+        </div>
+        <ul class="nprice__list">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Día 1 presencial + Día 2 virtual</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Acceso a todas las sesiones presenciales</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Coffee breaks, materiales, gafete, kit</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Certificado oficial de 20 horas incluido</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Entrada a rifas y networking</li>
+        </ul>
+        <div class="nprice__cta">
+          <button class="btn btn-primary" type="button" data-auth-open>Registrarme ahora</button>
+        </div>
+        <p class="nprice__note">Early Bird hasta el 30 de abril, 2026.</p>
+      </div>
+
+      <div class="nprice is-group">
+        <span class="nprice__tag">Grupo · Institución</span>
+        <h3>Pase Grupal (5+)</h3>
+        <div class="nprice__price">
+          <b>$75</b>
+          <small>/ docente · mínimo 5</small>
+        </div>
+        <div style="font-size: 13px; color: var(--muted);">
+          21% de descuento sobre Early Bird
+        </div>
+        <ul class="nprice__list">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Todos los beneficios del Pase Presencial</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Facturación única a la institución</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Logo de la institución en el programa</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Asistencia personalizada en sitio</li>
+        </ul>
+        <div class="nprice__cta">
+          <a class="btn btn-dark" href="mailto:ncte@centrocultural.cr?subject=Inscripci%C3%B3n%20grupal%20NCTE%202026">Contactar al equipo</a>
+        </div>
+        <p class="nprice__note">Atención directa al coordinador académico.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CALL FOR PROPOSALS ============ -->
+<section class="section ncfp" id="cfp" data-screen-label="08 CFP">
+  <div class="container">
+    <div class="ncfp__grid">
+      <div>
+        <span class="section-eyebrow" style="color: #FDE3E7;">Call for Proposals</span>
+        <h2 class="h-1">¿Querés ser <em>ponente</em> en NCTE 2026?</h2>
+        <p class="lede mt-3" style="color: rgba(255,255,255,.85);">
+          El Comité Organizador recibe propuestas para sesiones concurrentes, workshops
+          presenciales y webinars interactivos en los cinco strands del congreso. Todas
+          deben tener objetivos claros y resultados de aprendizaje esperados.
+        </p>
+        <div class="ncfp__deadline mt-3">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <div>
+            <strong>Cierre de convocatoria: 28 de febrero, 2026</strong><br/>
+            <span>Notificación de aceptación: 15 de abril, 2026</span>
+          </div>
+        </div>
+        <div class="mt-4" style="display:flex; gap:12px; flex-wrap:wrap;">
+          <a class="btn btn-primary" href="#" style="background:#fff; color:var(--cccn-red);">Enviar propuesta</a>
+          <a class="btn-ghost-light" href="uploads/NCTE 2026 - Call for Proposals.pdf" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; padding:13px 22px; border-radius:999px; font-weight:600; font-size:14px; background:rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.45);">Descargar PDF completo</a>
+        </div>
+      </div>
+      <div class="ncfp__steps">
+        <div class="ncfp__step">
+          <b>1</b>
+          <div>
+            <span>Elegí el formato y el strand</span>
+            <small>Concurrent session, workshop o webinar interactivo.</small>
+          </div>
+        </div>
+        <div class="ncfp__step">
+          <b>2</b>
+          <div>
+            <span>Prepará tu propuesta</span>
+            <small>Título, abstract (100–150 palabras), biografía y headshot profesional.</small>
+          </div>
+        </div>
+        <div class="ncfp__step">
+          <b>3</b>
+          <div>
+            <span>Envío en línea</span>
+            <small>Una propuesta por formulario. Acuse de recibo inmediato.</small>
+          </div>
+        </div>
+        <div class="ncfp__step">
+          <b>4</b>
+          <div>
+            <span>Revisión por el Comité</span>
+            <small>Aceptación, revisión o rechazo notificado por correo.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPONSORS ============ -->
+<section class="section nsponsors" id="sponsors" data-screen-label="09 Sponsors">
+  <div class="container">
+    <div class="t-center" style="max-width: 600px; margin: 0 auto 40px;">
+      <span class="section-eyebrow center">Patrocinadores</span>
+      <h2 class="h-2">Hacen posible <em>NCTE 2026</em>.</h2>
+      <p class="lede mt-2" style="margin-inline:auto;">
+        Las editoriales líderes en ELT, instituciones educativas y aliados estratégicos
+        que apoyan al congreso año tras año.
+      </p>
+    </div>
+
+    <div class="nsponsors__rows">
+      <div class="nsponsors__tier">
+        <h4>Platinum Partners</h4>
+        <div class="nsponsors__logos">
+          <div class="nsponsors__logo platinum">CAMBRIDGE</div>
+          <div class="nsponsors__logo platinum">PEARSON</div>
+          <div class="nsponsors__logo platinum">MACMILLAN</div>
+        </div>
+      </div>
+      <div class="nsponsors__tier">
+        <h4>Gold Sponsors</h4>
+        <div class="nsponsors__logos">
+          <div class="nsponsors__logo">National Geographic</div>
+          <div class="nsponsors__logo">Oxford ELT</div>
+          <div class="nsponsors__logo">British Council</div>
+          <div class="nsponsors__logo">ETS TOEFL</div>
+        </div>
+      </div>
+      <div class="nsponsors__tier">
+        <h4>Education Partners</h4>
+        <div class="nsponsors__logos">
+          <div class="nsponsors__logo">U.S. Embassy CR</div>
+          <div class="nsponsors__logo">MEP Costa Rica</div>
+          <div class="nsponsors__logo">UCR</div>
+          <div class="nsponsors__logo">UNED</div>
+          <div class="nsponsors__logo">INA</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-center mt-5">
+      <a class="btn btn-ghost" href="mailto:ncte@centrocultural.cr?subject=Patrocinio%20NCTE%202026">Quiero patrocinar NCTE 2026 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section" id="faq" data-screen-label="10 FAQ">
+  <div class="container">
+    <div class="nfaq">
+      <div>
+        <span class="section-eyebrow">Preguntas frecuentes</span>
+        <h2 class="h-1">Resolvemos tus <em>dudas</em>.</h2>
+        <p class="lede mt-3">
+          Si no encontrás respuesta a tu consulta, contactanos directamente al equipo
+          organizador. Te respondemos en menos de 24 horas hábiles.
+        </p>
+        <a class="btn-link mt-3" href="mailto:ncte@centrocultural.cr">ncte@centrocultural.cr</a>
+      </div>
+
+      <div class="nfaq__list">
+        <div class="nfaq__item">
+          <button class="nfaq__q" type="button" data-faq-q>
+            ¿La participación en los webinars del Día 2 es realmente gratuita?
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <div class="nfaq__a">Sí. La participación en las 6 sesiones virtuales del 9 de julio es completamente gratuita para cualquier docente que se registre. Si necesitás un certificado de participación con número de horas, hay un costo administrativo de $15.</div>
+        </div>
+        <div class="nfaq__item">
+          <button class="nfaq__q" type="button" data-faq-q>
+            ¿Puedo asistir solo a algunas sesiones del Día 1 presencial?
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <div class="nfaq__a">El pase presencial es de día completo. Una vez registrado podés elegir libremente entre las sesiones concurrentes simultáneas según tu interés en cada bloque horario. El planificador personal estará disponible una semana antes del evento.</div>
+        </div>
+        <div class="nfaq__item">
+          <button class="nfaq__q" type="button" data-faq-q>
+            ¿Cómo funciona el descuento grupal de 5+ docentes?
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <div class="nfaq__a">Si tu institución inscribe 5 o más docentes a la vez, la tarifa por persona baja a $75. Se factura todo bajo un mismo NIT y la institución aparece listada en el programa oficial. Coordinalo escribiendo a ncte@centrocultural.cr.</div>
+        </div>
+        <div class="nfaq__item">
+          <button class="nfaq__q" type="button" data-faq-q>
+            ¿En qué idioma se imparte el congreso?
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <div class="nfaq__a">Todas las sesiones, plenarias y webinars del NCTE se imparten en inglés. La comunicación administrativa (registro, correos, certificados) se realiza en español e inglés.</div>
+        </div>
+        <div class="nfaq__item">
+          <button class="nfaq__q" type="button" data-faq-q>
+            ¿Hay opciones de hospedaje cerca de la sede?
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <div class="nfaq__a">Sí. Tenemos convenios con varios hoteles boutique en Los Yoses, San Pedro y Barrio Escalante con tarifa preferencial para participantes del NCTE. La lista completa se envía al confirmar inscripción.</div>
+        </div>
+        <div class="nfaq__item">
+          <button class="nfaq__q" type="button" data-faq-q>
+            ¿Cuándo se publican los ponentes y la grilla detallada?
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <div class="nfaq__a">La lista completa de ponentes se publica a partir de marzo de 2026. La grilla detallada con título, ponente y aula de cada sesión concurrente queda disponible el 15 de mayo. Las personas registradas reciben acceso anticipado al planificador.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="ncta" data-screen-label="11 CTA final">
+  <div class="container">
+    <h2>Sumate al congreso que <em>define la enseñanza del inglés</em> en Costa Rica.</h2>
+    <p>Más de 4 décadas convocando a la comunidad ELT. Esta edición, la conversación es sobre IA, conexión humana y el aula del futuro.</p>
+    <a class="btn btn-primary" href="#register">Registrarme a NCTE 2026 →</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="nfooter">
+  <div class="container">
+    <div class="nfooter__grid">
+      <div class="nfooter__brand">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <img class="ribbon-globe" src="assets/ncte-globe-red.png" alt="NCTE" />
+          <div>
+            <b>NCTE</b>
+            <span>COSTA RICA</span>
+          </div>
+        </div>
+        <p>National Conference for Teachers of English Costa Rica. Desde 1984, la comunidad ELT más grande de Centroamérica.</p>
+        <div class="nfooter__cccn">
+          <img src="assets/logo-white.png" alt="CCCN"/>
+          <small>Organizado por el Centro Cultural Costarricense Norteamericano, asociación sin fines de lucro.</small>
+        </div>
+      </div>
+      <div>
+        <h4 class="nfooter__title">Congreso</h4>
+        <ul class="nfooter__list">
+          <li><a href="#about">Acerca del NCTE</a></li>
+          <li><a href="#schedule">Programa completo</a></li>
+          <li><a href="#strands">Strands temáticos</a></li>
+          <li><a href="#speakers">Ponentes</a></li>
+          <li><a href="#register">Tarifas e inscripción</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="nfooter__title">Participación</h4>
+        <ul class="nfooter__list">
+          <li><a href="#cfp">Call for Proposals</a></li>
+          <li><a href="#sponsors">Ser patrocinador</a></li>
+          <li><a href="#sponsors">Stand editorial</a></li>
+          <li><a href="#faq">Preguntas frecuentes</a></li>
+          <li><a href="#" data-auth-open>Mi cuenta NCTE</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="nfooter__title">Contacto</h4>
+        <ul class="nfooter__list">
+          <li><a href="mailto:ncte@centrocultural.cr">ncte@centrocultural.cr</a></li>
+          <li>Call center · 8000-INGLES</li>
+          <li>CCCN Los Yoses, San Pedro</li>
+          <li>Lun – Vie · 8am – 6pm</li>
+        </ul>
+      </div>
+    </div>
+    <div class="nfooter__bottom">
+      <div>© 2026 CCCN · National Conference for Teachers of English Costa Rica</div>
+      <div style="display:flex; gap:18px; flex-wrap:wrap;">
+        <a href="#">Política de privacidad</a>
+        <a href="#">Términos</a>
+        <a href="#">Código de conducta</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="ncte.js"></script>
+<script>
+  NCTE.renderShell({ active: "about" });
+  // Open every FAQ item so all answers print
+  document.querySelectorAll(".nfaq__item").forEach(el => el.classList.add("is-open"));
+  // Auto-trigger print once fonts are ready
+  (async () => {
+    try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
+    await new Promise(r => setTimeout(r, 500));
+    window.print();
+  })();
+</script>
+</body>
+</html>
