@@ -84,7 +84,9 @@
     gap: 32px;
     align-items: flex-start;
   }
-  @media (max-width: 940px) { .nwebr-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 940px) {
+    .nwebr-grid { grid-template-columns: 1fr; gap: 28px; }
+  }
 
   /* ============ FORM CARD ============ */
   .nwebr-form {
@@ -291,6 +293,41 @@
     font-size: 13px; border-top: 1px solid var(--line); background: #fff;
   }
   .nwebr-foot a { color: var(--cccn-blue-900); font-weight: 600; }
+
+  /* ---- Responsive refinements (phone tier) ---- */
+  @media (max-width: 720px) {
+    .nsub-header__bar { padding: 12px 0; }
+    .nsub-header__logo .ribbon-globe { width: 36px; }
+    .nsub-header__logo b { font-size: 15px; }
+    .nsub-header__back { padding: 7px 12px; font-size: 13px; }
+
+    .nwebr-hero { padding: 36px 0 18px; }
+    .nwebr-hero h1 { font-size: clamp(28px, 8vw, 38px); }
+    .nwebr-hero p { font-size: 15px; }
+
+    .nwebr-form { padding: 22px; }
+    .nwebr-form h2 { font-size: 24px; }
+    .nwebr-form__fields { grid-template-columns: 1fr; gap: 12px; }
+    .nwebr-form__field.span2 { grid-column: span 1; }
+    .nwebr-form__field input,
+    .nwebr-form__field select { font-size: 16px; padding: 12px 14px; } /* prevent iOS zoom */
+
+    .nwebr-sched__head h2 { font-size: 22px; }
+    .nwebr-day__head { padding: 12px 16px; flex-wrap: wrap; gap: 6px; }
+    .nwebr-day__head strong { font-size: 18px; }
+    .nwebr-row { padding: 12px 16px; gap: 10px; flex-wrap: wrap; }
+    .nwebr-row__time { flex-basis: auto; min-width: 60px; font-size: 13px; }
+    .nwebr-row__main b { font-size: 14px; }
+    .nwebr-row__tag { flex-shrink: 0; }
+    .nwebr-prom { flex-direction: column; align-items: flex-start; gap: 14px; padding: 18px; }
+    .nwebr-prom .btn { width: 100%; justify-content: center; }
+  }
+  @media (max-width: 420px) {
+    .nwebr-form { padding: 18px; }
+    .nwebr-form h2 { font-size: 22px; }
+    .nwebr-form__eyebrow { font-size: 10.5px; letter-spacing: .12em; }
+    .nwebr-day__head small { font-size: 9.5px; }
+  }
 </style>
 </head>
 <body id="top">

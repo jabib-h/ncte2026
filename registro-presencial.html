@@ -478,14 +478,55 @@
   /* ---- Responsive ---- */
   @media (max-width: 960px) {
     .nplan-hero__grid { grid-template-columns: 1fr; gap: 32px; }
-    .nplan__grid { grid-template-columns: 1fr; }
+    .nplan__grid { grid-template-columns: 1fr; gap: 28px; }
     .nplan-sum { position: static; }
     .nrooms { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    /* Sub-header tightens */
+    .nsub-header__bar { padding: 12px 0; }
+    .nsub-header__logo .ribbon-globe { width: 36px; }
+    .nsub-header__logo b { font-size: 15px; }
+    .nsub-header__logo span { font-size: 9px; }
+    .nsub-header__back { padding: 7px 12px; font-size: 13px; }
+
+    .nplan-hero { padding: 36px 0 18px; }
+    .nplan-hero h1 { font-size: clamp(28px, 8vw, 38px); }
+    .nplan-hero__meta { gap: 14px 24px; }
+
+    .nplan-ident { padding: 22px; }
+    .nplan-ident h2 { font-size: 20px; }
+    .nplan-ident .field { flex-direction: column; gap: 10px; }
+    .nplan-ident .field button,
+    .nplan-ident button { width: 100%; }
+    .nplan-ident__state { flex-wrap: wrap; gap: 12px; }
+    .nplan-ident__change { margin-left: 0; }
   }
   @media (max-width: 600px) {
     .nplan-hero__meta { grid-template-columns: 1fr; }
     .nblock__head { flex-wrap: wrap; gap: 10px; }
     .nblock__time { flex-basis: auto; font-size: 22px; }
+    .nblock__head-text h3 { font-size: 18px; }
+
+    /* Iframe-tight rooms on phones */
+    .nroom { padding: 14px; }
+    .nroom h4 { font-size: 14.5px; line-height: 1.25; }
+
+    /* Auto-included plenary card collapses below the icon if needed */
+    .nslot-open { padding: 14px 16px; gap: 12px; flex-wrap: wrap; }
+    .nslot-open__body { flex: 1 1 60%; min-width: 0; }
+    .nslot-open__tag { flex-shrink: 0; }
+
+    /* Summary on bottom looks better full-width with stronger CTA */
+    .nplan-sum__head { padding: 16px 18px 12px; }
+    .nplan-sum__head h3 { font-size: 18px; }
+    .nplan-sum__list { padding: 12px 18px 4px; }
+    .nplan-sum__foot { padding: 16px 18px 18px; }
+  }
+  @media (max-width: 380px) {
+    .nplan-hero { padding: 28px 0 12px; }
+    .nblock__head-text small { letter-spacing: .08em; }
+    .nplan-ident input[type="email"] { font-size: 16px; } /* prevent iOS zoom */
   }
 
   .nplan-foot {

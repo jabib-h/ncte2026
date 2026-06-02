@@ -1353,3 +1353,148 @@ body.is-detail-open { overflow: hidden; }
   cursor: pointer;
 }
 .nsponsors__logo.is-clickable::after { top: 8px; right: 8px; width: 22px; height: 22px; font-size: 16px; }
+
+/* ==========================================================================
+   RESPONSIVE REFINEMENTS — phone-first audit, 2026-06
+   --------------------------------------------------------------------------
+   Existing rules collapse the major grids around 880px (tablet).
+   These rules tighten the layout for 600px (large phone landscape),
+   480px (phone portrait) and 360px (small phone / iPhone SE narrow).
+   ========================================================================== */
+
+/* ---- 768px: tablet portrait fine-tuning ---- */
+@media (max-width: 768px) {
+  /* Tighter section padding so the page doesn't feel so airy on tablets */
+  .section { padding: clamp(40px, 7vw, 72px) 0; }
+
+  /* Schedule rows: the "tag" column on the right gets pushed to its own row */
+  .nsched__row {
+    grid-template-columns: 80px 1fr;
+    gap: 12px 14px;
+    padding: 14px 16px;
+  }
+  .nsched__row .nsched__tag {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 4px;
+  }
+}
+
+/* ---- 600px: large phone landscape ---- */
+@media (max-width: 600px) {
+  /* HEADER — keep brand + hamburger only; Register button stays but compact */
+  .ncte-header__bar { gap: 12px; padding: 12px 0; }
+  .ncte-header__cta { gap: 6px; }
+  .ncte-header__cta .btn { padding: 10px 14px; font-size: 13px; }
+  .ncte-header__cta .btn svg { display: none; }     /* drop the arrow on phones */
+  .ncte-header__logo .ribbon-globe { width: 36px; }
+  .ncte-header__lockup b { font-size: 16px; }
+  .ncte-header__lockup span { font-size: 9px; letter-spacing: .22em; }
+
+  /* Logged-in chip stays compact */
+  .ncte-header__user { padding: 4px 12px 4px 4px; gap: 8px; }
+  .ncte-header__user .avatar { width: 28px; height: 28px; font-size: 11px; }
+  .ncte-header__user b { font-size: 12px; }
+  .ncte-header__user small { font-size: 10px; }
+
+  /* QUICK BAR — go to single column on phones (was stuck at 2 cols) */
+  .nquick { padding: 22px 0; }
+  .nquick__grid { grid-template-columns: 1fr !important; gap: 14px; }
+  .nquick__item { gap: 12px; }
+
+  /* HERO — chip stays static (already at 880); tighten paddings + meta wraps cleanly */
+  .nhero__grid { padding: clamp(40px, 9vw, 64px) 0 clamp(48px, 10vw, 80px); }
+  .nhero__title { font-size: clamp(36px, 9vw, 56px); }
+  .nhero__meta { gap: 18px 24px; }
+  .nhero__meta strong { font-size: 18px; }
+  .nhero__ctas { gap: 10px; }
+  .nhero__ctas .btn, .nhero .btn-ghost-light { width: 100%; justify-content: center; }
+  .nhero__art { min-height: 260px; }
+  .nhero__floater { padding: 18px 10px; }
+
+  /* ACTIVITY GRID — prevent overflow when viewport <340px */
+  .nact-grid { grid-template-columns: 1fr; gap: 14px; }
+  .nact__main { padding: 18px 18px 6px; gap: 10px; }
+  .nact__foot { padding: 14px 18px 18px; }
+  .nact-filters { gap: 8px; }
+  .nact-filters button { font-size: 12px; padding: 7px 12px; }
+
+  /* SCHEDULE — slim the time column further on phones */
+  .nsched__day { border-radius: 14px; }
+  .nsched__head { padding: 18px 18px; }
+  .nsched__head strong { font-size: 22px; }
+  .nsched__row { padding: 12px 14px; }
+  .nsched__row b { font-size: 14.5px; }
+  .nsched__row span { font-size: 12px; }
+
+  /* STRANDS — single column on phones (was already 1fr at 480) */
+  .nstrands__grid { gap: 12px; }
+
+  /* SPEAKERS — single column (was at 520, raise to 600 for breathing room) */
+  .nspk__grid { grid-template-columns: 1fr; }
+
+  /* MODAL — full-width feel on phones, less padding */
+  .nmodal { padding: 8px; align-items: flex-start; padding-top: 24px; }
+  .nmodal__card { width: 100%; max-height: 96vh; border-radius: 18px; }
+  .nmodal__head { padding: 22px 22px 0; }
+  .nmodal__head h3 { font-size: 19px; }
+  .nmodal__body { padding: 18px 22px 22px; gap: 14px; }
+  .nmodal__row { grid-template-columns: 1fr; }  /* reinforce — was at 560 */
+
+  /* CTA final & section H1s */
+  .ncta { padding: clamp(40px, 9vw, 72px) 0; }
+  .ncta h2 { font-size: clamp(30px, 8vw, 48px); }
+
+  /* FOOTER — keep 2 cols at 600 but slim spacing */
+  .nfooter { padding: 48px 0 20px; }
+  .nfooter__grid { gap: 28px; }
+  .nfooter__brand .ribbon-globe { width: 48px; }
+
+  /* AUTH form errors */
+  .nmodal__form .field input,
+  .nmodal__form .field select { font-size: 16px; }  /* iOS won't zoom on focus at >=16px */
+}
+
+/* ---- 480px: phone portrait ---- */
+@media (max-width: 480px) {
+  /* HEADER: hide the Register text on the tightest phones, leave a compact pill */
+  .ncte-header__cta .btn { padding: 9px 12px; font-size: 12.5px; }
+
+  /* HERO: edition chip can break to its content size; smaller emblem */
+  .nhero__edition { padding: 8px 16px 8px 10px; gap: 10px; }
+  .nhero__edition-num { font-size: clamp(34px, 12vw, 48px); padding-right: 12px; }
+  .nhero__edition-stack strong { font-size: 13px; letter-spacing: .18em; }
+  .nhero__edition-stack small { font-size: 10px; }
+  .nhero__title { font-size: clamp(32px, 10vw, 44px); }
+  .nhero__meta strong { font-size: 16px; }
+
+  /* MODAL: tighter still */
+  .nmodal__head { padding: 18px 18px 0; }
+  .nmodal__body { padding: 14px 18px 20px; gap: 12px; }
+  .nmodal__head h3 { font-size: 18px; }
+  .nmodal__head small { font-size: 12.5px; }
+  .nmodal__tabs button { padding: 9px 10px; font-size: 12.5px; }
+
+  /* Footer collapses to 1 col already at 520; ensure links are tappable */
+  .nfooter__list { gap: 12px; }
+  .nfooter__bottom { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+
+/* ---- 360px: very small (iPhone SE 1st gen, narrow Android) ---- */
+@media (max-width: 360px) {
+  .container { padding: 0 14px; }
+  .nhero__title { font-size: 30px; }
+  .nhero__meta { gap: 14px 18px; }
+  .nhero__edition-stack strong { font-size: 12px; }
+  .nact-filters button { font-size: 11.5px; padding: 6px 10px; }
+}
+
+/* ---- Always-on touch / hover refinements ---- */
+@media (hover: none) {
+  /* Hover transforms feel laggy on touch; disable lift-on-hover */
+  .btn:hover, .nact:hover { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nhero__regchip, .nhero__orbital, .nhero__globe { animation: none !important; }
+  * { transition-duration: 0.01ms !important; }
+}
