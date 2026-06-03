@@ -421,11 +421,21 @@
           </div>
           <div class="nwebr-form__field">
             <label for="f-pass">Password</label>
-            <input id="f-pass" name="password" type="password" required autocomplete="new-password" placeholder="At least 8 chars · letters + numbers" minlength="8"/>
+            <div class="field-with-toggle">
+              <input id="f-pass" name="password" type="password" required autocomplete="new-password" placeholder="At least 8 chars · letters + numbers" minlength="8"/>
+              <button type="button" class="field-pwd-toggle" data-pwd-toggle="f-pass" aria-label="Show password" title="Show password">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
           </div>
           <div class="nwebr-form__field">
             <label for="f-pass2">Confirm password</label>
-            <input id="f-pass2" name="passwordConfirm" type="password" required autocomplete="new-password" placeholder="Repeat password" minlength="8"/>
+            <div class="field-with-toggle">
+              <input id="f-pass2" name="passwordConfirm" type="password" required autocomplete="new-password" placeholder="Repeat password" minlength="8"/>
+              <button type="button" class="field-pwd-toggle" data-pwd-toggle="f-pass2" aria-label="Show password" title="Show password">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -587,6 +597,22 @@
       success.classList.add('is-on');
       success.scrollIntoView({ behavior: 'auto', block: 'nearest' });
     }
+
+    // Password show/hide toggle (eye icon next to the field)
+    const EYE_OPEN  = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+    const EYE_CLOSED= '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.93 10.93 0 0 1 12 19c-6 0-10-7-10-7a18.5 18.5 0 0 1 4.21-5.21M9.88 4.24A10.45 10.45 0 0 1 12 4c6 0 10 7 10 7a18.45 18.45 0 0 1-2.27 3.34M14.12 14.12A3 3 0 1 1 9.88 9.88M1 1l22 22"/></svg>';
+    document.querySelectorAll('[data-pwd-toggle]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.pwdToggle);
+        if (!input) return;
+        const showing = input.type === 'text';
+        input.type = showing ? 'password' : 'text';
+        btn.innerHTML = showing ? EYE_OPEN : EYE_CLOSED;
+        btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+        btn.setAttribute('title',      showing ? 'Show password' : 'Hide password');
+        input.focus();
+      });
+    });
 
     // If the user is already registered, skip the form entirely. The auth
     // module loads the profile asynchronously, so subscribe via onChange()

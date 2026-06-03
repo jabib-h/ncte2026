@@ -949,11 +949,17 @@ a.nsched__row:hover::before { height: 60%; }
   font-size: 11px; color: var(--muted); text-align: center; margin-top: 4px; line-height: 1.5;
 }
 
-/* Logged-in chip in header */
+/* Logged-in chip in header — link to /registro-presencial ("Mi itinerario") */
 .ncte-header__user {
   display: inline-flex; align-items: center; gap: 10px;
   padding: 6px 14px 6px 6px; border-radius: 999px;
   background: var(--cream); border: 1px solid var(--line);
+  text-decoration: none; color: inherit;
+  transition: background .15s ease, border-color .15s ease, transform .12s ease;
+}
+.ncte-header__user:hover {
+  background: var(--cccn-red-100); border-color: var(--cccn-red);
+  transform: translateY(-1px);
 }
 .ncte-header__user .avatar {
   width: 30px; height: 30px; border-radius: 999px;
@@ -965,6 +971,39 @@ a.nsched__row:hover::before { height: 60%; }
   font-size: 13px; color: var(--cccn-blue-900); font-weight: 700;
 }
 .ncte-header__user small { display: block; font-size: 11px; color: var(--muted); }
+
+/* Dedicated sign-out button right next to the avatar */
+.ncte-header__logout {
+  width: 38px; height: 38px; border-radius: 999px;
+  background: #fff; color: var(--muted);
+  border: 1px solid var(--line);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: color .15s ease, border-color .15s ease, background .15s ease;
+}
+.ncte-header__logout:hover {
+  color: var(--cccn-red); border-color: var(--cccn-red);
+  background: var(--cccn-red-100);
+}
+@media (max-width: 600px) {
+  .ncte-header__logout { width: 34px; height: 34px; }
+}
+
+/* Password "show/hide" toggle that sits inside the input frame */
+.field-with-toggle { position: relative; display: block; }
+.field-with-toggle input { padding-right: 44px !important; }
+.field-pwd-toggle {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  width: 36px; height: 36px; border-radius: 8px;
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--muted);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: color .15s ease, background .15s ease;
+}
+.field-pwd-toggle:hover { color: var(--cccn-blue-700); background: var(--cccn-blue-100); }
+.field-pwd-toggle:focus-visible {
+  outline: 2px solid var(--cccn-blue-500); outline-offset: 2px;
+}
 
 /* ============ MOBILE NAV ============ */
 .nmnav { position: fixed; inset: 0; background: rgba(11,19,32,.5); z-index: 100; display: none; }

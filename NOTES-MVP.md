@@ -104,23 +104,78 @@ page refresh.
 
 ---
 
+## Confirmation email — deploy the Edge Function (one-time setup)
+
+The branded confirmation email lives in
+`supabase/functions/send-confirmation/index.ts`. To get it actually sending:
+
+### 1. Create a Resend account (free tier is plenty)
+
+- https://resend.com → sign up.
+- API Keys → "Create API Key" → name `ncte-prod` → copy the `re_...` value.
+
+### 2. Verify the centrocultural.cr domain in Resend
+
+- Resend dashboard → Domains → "Add Domain" → `centrocultural.cr`.
+- Resend prints 3-4 DNS records (TXT + MX + DKIM CNAME). Hand them to whoever
+  manages DNS at the CCCN (likely an IT/infra contact). They add them on the
+  centrocultural.cr DNS provider. Propagation takes 1-30 minutes.
+- Once verified (green checkmark), `ncte@centrocultural.cr` can send mail.
+
+### 3. Install the Supabase CLI (one-time)
+
+```bash
+# Windows
+scoop install supabase
+# or via npm
+npm i -g supabase
+```
+
+### 4. Link the local repo to the project and push the function
+
+```bash
+cd "CCCN - NCTE (2026)"
+supabase login                          # opens the browser
+supabase link --project-ref tdhdwjsugijnxfaqzxnu
+
+# Set the secrets the function reads at runtime
+supabase secrets set RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxx
+supabase secrets set EMAIL_FROM='NCTE 2026 <ncte@centrocultural.cr>'
+supabase secrets set EMAIL_REPLY_TO=ncte@centrocultural.cr
+
+# Deploy
+supabase functions deploy send-confirmation
+```
+
+### 5. Test from the planner
+
+Open `/registro-presencial`, pick a room, click "Email me my confirmation →".
+A toast confirms; the email lands in the registered inbox within ~10 seconds.
+
+### Sandbox testing without DNS (optional)
+
+While DNS is still propagating you can leave `EMAIL_FROM` unset; the function
+falls back to `onboarding@resend.dev` (Resend's shared sandbox). Email arrives
+but the From won't be the CCCN domain — fine for QA, not for the final cutover.
+
+---
+
 ## Things still pending (roadmap)
 
-1. **Transactional emails** — Edge Function + Resend, triggered on `picks`
-   insert/update (confirmation, change, cancellation, 24h reminder). Use
-   `ncte@centrocultural.cr` as the From; configure SPF/DKIM/DMARC on the
-   CCCN domain first.
-2. **"Mi itinerario" page** — clicking the header avatar should open
-   `/itinerario` with the user's profile + picks + Day 2 Zoom links +
-   edit / sign out buttons.
-3. **Legal pages** — Privacy Policy, Terms, Code of Conduct (currently
+1. **"Mi itinerario" page** — currently the avatar already routes to
+   `/registro-presencial` and the planner doubles as the itinerary view.
+   A dedicated `/itinerario` with profile editing + Day 2 Zoom links + a
+   downloadable PDF is still TBD.
+2. **Legal pages** — Privacy Policy, Terms, Code of Conduct (currently
    linked to `#`).
-4. **Speaker photos + sponsor logos** — replace initials avatars and
+3. **Speaker photos + sponsor logos** — replace initials avatars and
    placeholder cards.
-5. **Admin view** — restricted page for CCCN staff to download the
+4. **Admin view** — restricted page for CCCN staff to download the
    roster and per-session attendee lists (Supabase view + a tiny dashboard).
-6. **Waitlist** for sessions that go full — promote the first in queue
+5. **Waitlist** for sessions that go full — promote the first in queue
    when someone cancels.
+6. **Day 2 Zoom links email** — separate send-zoom-links function that
+   runs 24h before each webinar.
 
 ## Local development
 

@@ -1201,9 +1201,7 @@
       } else {
         cta.disabled = false;
         cta.classList.remove("is-disabled");
-        cta.textContent = pickedCount === 2
-          ? "Your Day 1 plan is set ✓"
-          : "Your " + pickedCount + " spot is saved ✓";
+        cta.textContent = "Email me my confirmation →";
       }
     }
   }
@@ -1298,12 +1296,39 @@
     });
   }
 
-  // The "Confirm my plan" CTA used to act as a final submit. With server-side
-  // atomic reservations every click is already confirmed — make the button a
-  // no-op acknowledgement.
+  // The "Confirm my plan" CTA now triggers the branded confirmation email.
+  // Picks themselves are already atomically saved server-side on each click;
+  // this button is the user-facing "I'm done, send me my itinerary" moment.
   const confirmBtn = document.querySelector("[data-confirm]");
-  if (confirmBtn) confirmBtn.addEventListener("click", () => {
-    if (Object.values(picks).some(Boolean)) toast("Your plan is saved. See you July 8 ✦");
+  if (confirmBtn) confirmBtn.addEventListener("click", async () => {
+    if (!Object.values(picks).some(Boolean)) {
+      toast("Pick at least one room first.", "error");
+      return;
+    }
+    if (confirmBtn.disabled) return;
+    confirmBtn.disabled = true;
+    const originalLabel = confirmBtn.textContent;
+    confirmBtn.textContent = "Sending confirmation…";
+    try {
+      const { data, error } = await sb.functions.invoke("send-confirmation");
+      if (error) throw error;
+      if (data && data.sent === false && data.skipped) {
+        // Email infrastructure not configured yet — surface a softer message
+        // so internal demos don't show a scary red error.
+        toast("Plan saved. (Email delivery isn't set up yet — coming soon.)");
+      } else {
+        toast("Confirmation sent. Check your inbox ✦");
+      }
+    } catch (err) {
+      console.error("[Planner] send-confirmation error:", err);
+      const msg = (err && err.message) || "Could not send the confirmation email.";
+      toast(msg, "error");
+    } finally {
+      confirmBtn.disabled = false;
+      // Restore the dynamic label written by paintAll().
+      paintAll();
+      if (confirmBtn.textContent === "Sending confirmation…") confirmBtn.textContent = originalLabel;
+    }
   });
 
   /* ---- 7. Realtime — keep counters in sync across attendees ---- */

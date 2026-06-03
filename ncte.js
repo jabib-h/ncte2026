@@ -35,6 +35,9 @@
       lock:    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
       user:    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
       chev:    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>',
+      logout:  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17l5-5-5-5M20 12H9M14 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8"/></svg>',
+      eye:     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+      eyeOff:  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.93 10.93 0 0 1 12 19c-6 0-10-7-10-7a18.5 18.5 0 0 1 4.21-5.21M9.88 4.24A10.45 10.45 0 0 1 12 4c6 0 10 7 10 7a18.45 18.45 0 0 1-2.27 3.34M14.12 14.12A3 3 0 1 1 9.88 9.88M1 1l22 22"/></svg>',
       fb:      '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.5-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/></svg>',
       ig:      '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.58 0 4.85.07 1.17.05 1.8.25 2.23.42a3.7 3.7 0 0 1 1.37.9c.42.43.7.84.9 1.36.16.42.36 1.06.42 2.23C21.96 8.42 22 8.8 22 12s0 3.58-.07 4.85c-.05 1.17-.26 1.8-.42 2.23a3.7 3.7 0 0 1-.9 1.37 3.7 3.7 0 0 1-1.37.9c-.42.16-1.06.36-2.23.42-1.27.06-1.65.07-4.85.07s-3.58 0-4.85-.07c-1.17-.06-1.8-.26-2.23-.42a3.7 3.7 0 0 1-1.37-.9 3.7 3.7 0 0 1-.9-1.37c-.16-.42-.36-1.06-.42-2.23C2.04 15.58 2 15.2 2 12s0-3.58.07-4.85c.06-1.17.26-1.81.42-2.23.21-.52.49-.93.9-1.36.43-.42.84-.7 1.37-.9.42-.17 1.06-.37 2.23-.42C8.42 2.2 8.8 2.2 12 2.2zm0 1.8c-3.15 0-3.5 0-4.74.07-1.13.05-1.74.24-2.15.4-.54.21-.93.46-1.34.86-.4.4-.65.8-.86 1.34-.16.4-.35 1.02-.4 2.15C2.43 8.5 2.4 8.85 2.4 12s0 3.5.07 4.74c.05 1.13.24 1.74.4 2.15.21.54.46.93.86 1.34.4.4.8.65 1.34.86.4.16 1.02.35 2.15.4 1.24.07 1.59.07 4.74.07s3.5 0 4.74-.07c1.13-.05 1.74-.24 2.15-.4.54-.21.93-.46 1.34-.86.4-.4.65-.8.86-1.34.16-.4.35-1.02.4-2.15.07-1.24.07-1.59.07-4.74s0-3.5-.07-4.74c-.05-1.13-.24-1.74-.4-2.15a3.6 3.6 0 0 0-.86-1.34 3.6 3.6 0 0 0-1.34-.86c-.4-.16-1.02-.35-2.15-.4C15.5 4 15.15 4 12 4zm0 3.16a4.84 4.84 0 1 1 0 9.68 4.84 4.84 0 0 1 0-9.68zm0 8a3.16 3.16 0 1 0 0-6.32 3.16 3.16 0 0 0 0 6.32zm6.16-8.19a1.13 1.13 0 1 1-2.26 0 1.13 1.13 0 0 1 2.26 0z"/></svg>',
       ln:      '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.95v5.66H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.86 3.37-1.86 3.6 0 4.27 2.37 4.27 5.45v6.3zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>',
@@ -83,7 +86,7 @@
         <nav class="ncte-header__nav" aria-label="Principal">${links}</nav>
         <div class="ncte-header__cta">
           <span data-user-slot></span>
-          <button type="button" class="btn btn-primary" data-auth-open="signup">Register ${icon("arrow")}</button>
+          <a data-cta-primary class="btn btn-primary" href="#register" data-auth-open="signup">Register ${icon("arrow")}</a>
           <button class="btn-icon ncte-header__menu" aria-label="Open menu" data-mnav-open>${icon("menu")}</button>
         </div>
       </div>
@@ -183,13 +186,19 @@
 
             <div class="field">
               <label for="auth-pass">Password</label>
-              <input id="auth-pass" name="password" type="password" required autocomplete="new-password" placeholder="At least 8 characters · letters + numbers" minlength="8" maxlength="200"/>
+              <div class="field-with-toggle">
+                <input id="auth-pass" name="password" type="password" required autocomplete="new-password" placeholder="At least 8 characters · letters + numbers" minlength="8" maxlength="200"/>
+                <button type="button" class="field-pwd-toggle" data-pwd-toggle="auth-pass" aria-label="Show password" title="Show password">${icon("eye")}</button>
+              </div>
               <small class="field-error" data-err="password"></small>
             </div>
 
             <div class="field" data-only-signup>
               <label for="auth-pass2">Confirm password</label>
-              <input id="auth-pass2" name="passwordConfirm" type="password" autocomplete="new-password" placeholder="Repeat your password" minlength="8" maxlength="200"/>
+              <div class="field-with-toggle">
+                <input id="auth-pass2" name="passwordConfirm" type="password" autocomplete="new-password" placeholder="Repeat your password" minlength="8" maxlength="200"/>
+                <button type="button" class="field-pwd-toggle" data-pwd-toggle="auth-pass2" aria-label="Show password" title="Show password">${icon("eye")}</button>
+              </div>
               <small class="field-error" data-err="passwordConfirm"></small>
             </div>
 
@@ -218,23 +227,50 @@
     if (!slot) return;
     const u = getUser();
     if (u) {
+      // Avatar = link to the planner ("Mi itinerario"). Sign-out is a
+      // dedicated icon button right next to it, kept visually small so
+      // it doesn't compete with the main affordance.
       slot.innerHTML = `
-        <button class="ncte-header__user" type="button" data-user-menu>
+        <a class="ncte-header__user" href="/registro-presencial" title="My itinerary">
           <span class="avatar">${escapeHtml(initialsOf(u))}</span>
           <span>
             <b>${escapeHtml(displayName(u))}</b>
-            <small>My account</small>
+            <small>My itinerary</small>
           </span>
+        </a>
+        <button class="ncte-header__logout" type="button" data-user-logout aria-label="Sign out" title="Sign out">
+          ${icon("logout")}
         </button>`;
-      slot.querySelector("[data-user-menu]").addEventListener("click", () => {
-        if (confirm(`Sign out ${u.email}?`)) {
-          window.NCTEAuth.logout();
-          toast("Signed out.");
+      slot.querySelector("[data-user-logout]").addEventListener("click", async () => {
+        await window.NCTEAuth.logout();
+        toast("Signed out.");
+        // Send them back to the homepage if they were on a gated page.
+        if (location.pathname.indexOf("registro-presencial") !== -1) {
+          location.href = "/";
         }
       });
     } else {
       // Document-level [data-auth-open] handler in wireAuth picks this up.
       slot.innerHTML = `<button class="btn btn-ghost" type="button" data-auth-open="signin">Sign in</button>`;
+    }
+    renderCtaPrimary();
+  }
+
+  // The primary header CTA — "Register" when logged out, "Save my spot"
+  // (navigation to the planner) when logged in.
+  function renderCtaPrimary() {
+    const btn = document.querySelector("[data-cta-primary]");
+    if (!btn) return;
+    if (getUser()) {
+      btn.textContent = "Save my spot ";
+      btn.insertAdjacentHTML("beforeend", icon("arrow"));
+      btn.setAttribute("href", "/registro-presencial");
+      btn.removeAttribute("data-auth-open");
+    } else {
+      btn.textContent = "Register ";
+      btn.insertAdjacentHTML("beforeend", icon("arrow"));
+      btn.setAttribute("href", "#register");
+      btn.setAttribute("data-auth-open", "signup");
     }
   }
 
@@ -355,6 +391,19 @@
     }
   }
 
+  function togglePasswordVisibility(toggleBtn) {
+    const id = toggleBtn.dataset.pwdToggle;
+    const input = document.getElementById(id);
+    if (!input) return;
+    const showing = input.type === "text";
+    input.type = showing ? "password" : "text";
+    toggleBtn.innerHTML = icon(showing ? "eye" : "eyeOff");
+    toggleBtn.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+    toggleBtn.setAttribute("title",      showing ? "Show password" : "Hide password");
+    // Keep focus on the field so typing continues naturally
+    input.focus();
+  }
+
   function wireAuth() {
     document.addEventListener("click", (e) => {
       const opener = e.target.closest("[data-auth-open]");
@@ -364,6 +413,8 @@
       if (tab) { _authMode = tab.dataset.tab; syncAuthMode(); return; }
       const sw = e.target.closest("[data-switch]");
       if (sw) { e.preventDefault(); _authMode = sw.dataset.switch; syncAuthMode(); return; }
+      const pwdToggle = e.target.closest("[data-pwd-toggle]");
+      if (pwdToggle) { e.preventDefault(); togglePasswordVisibility(pwdToggle); return; }
     });
     const m = modalEl();
     if (!m) return;
