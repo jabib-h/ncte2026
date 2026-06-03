@@ -77,11 +77,8 @@
     <header class="ncte-header">
       <div class="strip-flag"></div>
       <div class="container ncte-header__bar">
-        <a class="ncte-header__logo" href="#top" aria-label="NCTE 2026">
-          ${ribbonGlobe()}
-          <span class="ncte-header__lockup">
-            <b>NCTE</b><span>COSTA RICA</span>
-          </span>
+        <a class="ncte-header__logo" href="#top" aria-label="NCTE 2026 · National Conference for Teachers of English Costa Rica">
+          <img class="ncte-header__brand-mark" src="assets/MAIN_LOGO.png" alt="NCTE Costa Rica"/>
         </a>
         <nav class="ncte-header__nav" aria-label="Principal">${links}</nav>
         <div class="ncte-header__cta">
@@ -402,22 +399,59 @@
     });
   }
 
+  /* Scrollspy — highlights the nav link whose section is closest to the top
+     of the viewport (just below the sticky header band). Earlier versions
+     flickered because the previous IntersectionObserver picked whichever
+     section happened to fire last; this version tracks the set of
+     currently-visible sections and always picks the topmost one. */
   function wireScrollSpy() {
-    const sections = NAV.map(n => document.getElementById(n.id)).filter(Boolean);
-    const linksByHref = Object.fromEntries(
-      [...document.querySelectorAll(".ncte-header__nav a")].map(a => [a.getAttribute("href"), a])
-    );
+    const links = [...document.querySelectorAll(".ncte-header__nav a[href^='#']")];
+    if (!links.length) return;
+    const linkByHash = Object.fromEntries(links.map(a => [a.getAttribute("href"), a]));
+    const sections = links
+      .map(a => document.getElementById(a.getAttribute("href").slice(1)))
+      .filter(Boolean);
     if (!sections.length) return;
+
+    let activeHash = null;
+    const visibleIds = new Set();
+
+    function setActive(hash) {
+      if (hash === activeHash) return;
+      activeHash = hash;
+      links.forEach(a => a.classList.toggle("is-active", a.getAttribute("href") === hash));
+    }
+
+    function pickActive() {
+      // Of the sections currently within the activation band, pick the one
+      // whose top edge is closest to (but not past) the top of the band.
+      let best = null;
+      visibleIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const top = el.getBoundingClientRect().top;
+        if (best === null || top < best.top) best = { id, top };
+      });
+      if (best) setActive("#" + best.id);
+    }
+
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => {
-        if (e.isIntersecting) {
-          Object.values(linksByHref).forEach(a => a.classList.remove("is-active"));
-          const a = linksByHref["#" + e.target.id];
-          if (a) a.classList.add("is-active");
-        }
+        if (e.isIntersecting) visibleIds.add(e.target.id);
+        else visibleIds.delete(e.target.id);
       });
-    }, { threshold: 0.3, rootMargin: "-20% 0px -60% 0px" });
+      pickActive();
+    }, {
+      // Activation band: top ~15% to ~35% of viewport. Wider than before so
+      // it works on tall sections without flicker, narrow enough to stay precise.
+      rootMargin: "-15% 0px -65% 0px",
+      threshold: 0,
+    });
+
     sections.forEach(s => io.observe(s));
+
+    // On clicks, set active immediately for a snappier feel (don't wait for scroll)
+    links.forEach(a => a.addEventListener("click", () => setActive(a.getAttribute("href"))));
   }
 
   function toast(msg) {
