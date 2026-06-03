@@ -567,6 +567,8 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-config.js"></script>
 <script src="auth.js"></script>
 <script>
   (function () {
@@ -586,9 +588,18 @@
       success.scrollIntoView({ behavior: 'auto', block: 'nearest' });
     }
 
-    // If the user is already registered in this browser, skip the form entirely.
-    const existing = window.NCTEAuth && window.NCTEAuth.currentUser();
-    if (existing) { showHeroSuccess(existing); return; }
+    // If the user is already registered, skip the form entirely. The auth
+    // module loads the profile asynchronously, so subscribe via onChange()
+    // rather than reading currentUser() once synchronously.
+    let switchedToSuccess = false;
+    if (window.NCTEAuth && window.NCTEAuth.onChange) {
+      window.NCTEAuth.onChange((user) => {
+        if (user && !switchedToSuccess) {
+          switchedToSuccess = true;
+          showHeroSuccess(user);
+        }
+      });
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();

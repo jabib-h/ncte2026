@@ -1,40 +1,34 @@
 /* ============================================================
-   NCTE 2026 — Auth module (MVP, localStorage-backed)
-   ============================================================
-   PUBLIC API (window.NCTEAuth):
-     register(payload)   -> Promise<user>
-     login(email, pass)  -> Promise<user>
-     logout()            -> void
-     currentUser()       -> user | null
-     requireAuth(opts)   -> user | null  (redirects if missing)
-     onChange(cb)        -> unsubscribe fn
-     escapeHtml(str)     -> safe string for innerHTML
+   NCTE 2026 — Auth module (Supabase-backed)
+   ----------------------------------------------------------------
+   Same public API as the localStorage MVP (NCTEAuth.register / login /
+   logout / currentUser / requireAuth / onChange / escapeHtml) so the
+   rest of the app didn't have to change. All the storage and crypto
+   work now lives on Supabase: signUp() / signInWithPassword() / a
+   `profiles` table mirrored from auth.users via the on_auth_user_created
+   trigger (see supabase/schema.sql).
 
-   The body of every method is the ONLY place we touch storage,
-   so swapping to Supabase later means rewriting just this file:
-   - register -> supabase.auth.signUp({ email, password, options:{ data: profile }})
-   - login    -> supabase.auth.signInWithPassword({ email, password })
-   - logout   -> supabase.auth.signOut()
-   - currentUser -> supabase.auth.getUser() (cached in memory)
-   - onChange -> supabase.auth.onAuthStateChange(cb)
-
-   PASSWORDS: stored as PBKDF2-SHA-256 derivations with per-user salt.
-   This is NOT a replacement for server-side hashing — anyone with access
-   to localStorage can read the hash and brute-force offline. It exists so
-   the temp URL doesn't leak plaintext passwords to a casual inspector and
-   so swapping to Supabase is a one-file change.
+   Why keep a wrapper instead of using window.supabaseClient directly?
+   - The UI was already wired to NCTEAuth; the wrapper means zero changes
+     to ncte.js / registro-presencial.html / webinars.html.
+   - It lets us validate input shape client-side before bothering the
+     network — same UX as the MVP (per-field errors).
+   - We add a small in-memory cache for `currentUser()` so the header
+     avatar doesn't flicker between renders.
    ============================================================ */
 (function () {
   "use strict";
 
-  const USERS_KEY   = "ncte_users_v1";    // { [email]: profile + credentials }
-  const SESSION_KEY = "ncte_session_v1";  // { email, issuedAt }
-
-  const PBKDF2_ITERS = 150_000;
-  const SALT_BYTES   = 16;
-  const KEY_BITS     = 256;
+  if (!window.supabaseClient) {
+    console.error("[NCTE Auth] window.supabaseClient is missing. " +
+                  "Load @supabase/supabase-js and supabase-config.js before auth.js.");
+    return;
+  }
+  const sb = window.supabaseClient;
 
   const listeners = new Set();
+  let   cachedUser = null;   // { id, email, firstName, ... } | null
+  let   loadingProfile = null; // promise — guards against parallel /profiles fetches
 
   /* ============== utils ============== */
   function escapeHtml(s) {
@@ -42,96 +36,96 @@
       "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
     })[c]);
   }
-
-  function toHex(buf) {
-    const b = new Uint8Array(buf);
-    let s = "";
-    for (let i = 0; i < b.length; i++) s += b[i].toString(16).padStart(2, "0");
-    return s;
-  }
-
-  function fromHex(hex) {
-    const out = new Uint8Array(hex.length / 2);
-    for (let i = 0; i < out.length; i++) out[i] = parseInt(hex.substr(i * 2, 2), 16);
-    return out;
-  }
-
-  async function hashPassword(password, saltHex) {
-    if (!window.crypto || !window.crypto.subtle) {
-      throw new Error("Your browser does not support secure hashing. Please use a modern browser.");
-    }
-    const salt = saltHex ? fromHex(saltHex) : window.crypto.getRandomValues(new Uint8Array(SALT_BYTES));
-    const enc = new TextEncoder();
-    const baseKey = await window.crypto.subtle.importKey(
-      "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveBits"]
-    );
-    const bits = await window.crypto.subtle.deriveBits(
-      { name: "PBKDF2", salt, iterations: PBKDF2_ITERS, hash: "SHA-256" },
-      baseKey, KEY_BITS
-    );
-    return { hash: toHex(bits), salt: toHex(salt) };
-  }
-
-  // Constant-time-ish compare to avoid trivial timing leaks
-  function safeEqual(a, b) {
-    if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
-    let diff = 0;
-    for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-    return diff === 0;
-  }
-
   function normalizeEmail(email) {
     return String(email || "").trim().toLowerCase();
   }
 
-  function readUsers() {
-    try { return JSON.parse(localStorage.getItem(USERS_KEY) || "{}") || {}; }
-    catch { return {}; }
-  }
-  function writeUsers(map) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(map));
-  }
-
-  function readSession() {
-    try { return JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); }
-    catch { return null; }
-  }
-  function writeSession(s) {
-    if (s) localStorage.setItem(SESSION_KEY, JSON.stringify(s));
-    else localStorage.removeItem(SESSION_KEY);
-  }
-
-  function profileOf(record) {
-    if (!record) return null;
-    // Never return the password hash to the rest of the app
-    const { passwordHash, salt, ...rest } = record;
-    return rest;
-  }
-
-  function emit() {
-    const u = currentUser();
-    listeners.forEach(fn => { try { fn(u); } catch (e) { /* noop */ } });
-  }
-
-  /* ============== validation ============== */
+  /* ============== validation (client side, before hitting the network) */
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const PHONE_RE = /^[+()\-.\s\d]{7,}$/;
 
   function validateRegistration(p) {
     const errors = {};
-    if (!p.firstName || !p.firstName.trim())   errors.firstName   = "Required";
-    if (!p.lastName  || !p.lastName.trim())    errors.lastName    = "Required";
-    if (!p.email || !EMAIL_RE.test(p.email))   errors.email       = "Enter a valid email";
-    if (!p.phone || !PHONE_RE.test(p.phone))   errors.phone       = "Enter a valid phone";
-    if (!p.institution || !p.institution.trim()) errors.institution = "Required";
-    if (!p.role)                               errors.role        = "Select a role";
-    if (!p.password || p.password.length < 8)  errors.password    = "Use at least 8 characters";
+    if (!p.firstName   || !p.firstName.trim())     errors.firstName   = "Required";
+    if (!p.lastName    || !p.lastName.trim())      errors.lastName    = "Required";
+    if (!p.email       || !EMAIL_RE.test(p.email)) errors.email       = "Enter a valid email";
+    if (!p.phone       || !PHONE_RE.test(p.phone)) errors.phone       = "Enter a valid phone";
+    if (!p.institution || !p.institution.trim())   errors.institution = "Required";
+    if (!p.role)                                   errors.role        = "Select a role";
+    if (!p.password    || p.password.length < 8)   errors.password    = "Use at least 8 characters";
     else if (!/[A-Za-z]/.test(p.password) || !/\d/.test(p.password))
-                                               errors.password    = "Mix letters and numbers";
-    if (p.password !== p.passwordConfirm)      errors.passwordConfirm = "Passwords do not match";
-    if (!p.consent)                            errors.consent     = "You must accept the terms";
+                                                   errors.password    = "Mix letters and numbers";
+    if (p.password !== p.passwordConfirm)          errors.passwordConfirm = "Passwords do not match";
+    if (!p.consent)                                errors.consent     = "You must accept the terms";
     return errors;
   }
+
+  /* ============== profile fetching =============== */
+  async function fetchProfile(authUser) {
+    if (!authUser) return null;
+    const { data, error } = await sb
+      .from("profiles")
+      .select("id, email, first_name, last_name, phone, institution, role, country, created_at")
+      .eq("id", authUser.id)
+      .single();
+    if (error) {
+      // The signup trigger creates the row; if it isn't there yet (race) we
+      // still want SOMETHING to display, so fall back to the auth.users data.
+      console.warn("[NCTE Auth] profile fetch fell back to metadata:", error.message);
+      const m = authUser.user_metadata || {};
+      return {
+        id:          authUser.id,
+        email:       authUser.email,
+        firstName:   m.first_name   || "",
+        lastName:    m.last_name    || "",
+        phone:       m.phone        || "",
+        institution: m.institution  || "",
+        role:        m.role         || "other",
+        country:     m.country      || "CR",
+      };
+    }
+    return {
+      id:          data.id,
+      email:       data.email,
+      firstName:   data.first_name,
+      lastName:    data.last_name,
+      phone:       data.phone,
+      institution: data.institution,
+      role:        data.role,
+      country:     data.country,
+      createdAt:   data.created_at,
+    };
+  }
+
+  async function refreshFromSession() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session || !session.user) { cachedUser = null; emit(); return; }
+    if (!loadingProfile) {
+      loadingProfile = fetchProfile(session.user)
+        .then(p => { cachedUser = p; loadingProfile = null; emit(); return p; })
+        .catch(e => { loadingProfile = null; throw e; });
+    }
+    return loadingProfile;
+  }
+
+  function emit() {
+    listeners.forEach(fn => { try { fn(cachedUser); } catch (e) { /* noop */ } });
+  }
+
+  // Keep the cache + listeners in sync with Supabase's own auth state
+  // (cross-tab login / token refresh / sign out from another window).
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT" || !session) {
+      cachedUser = null;
+      emit();
+      return;
+    }
+    // SIGNED_IN, TOKEN_REFRESHED, USER_UPDATED — refresh the profile.
+    refreshFromSession().catch(e => console.error("[NCTE Auth]", e));
+  });
+
+  // Kick off initial load (don't await — listeners will fire when ready).
+  refreshFromSession().catch(e => console.error("[NCTE Auth]", e));
 
   /* ============== public API ============== */
   async function register(payload) {
@@ -142,30 +136,45 @@
       throw err;
     }
     const email = normalizeEmail(payload.email);
-    const users = readUsers();
-    if (users[email]) {
-      const err = new Error("That email is already registered. Sign in instead.");
-      err.fields = { email: "Already registered" };
-      throw err;
-    }
-    const { hash, salt } = await hashPassword(payload.password);
-    const record = {
-      email,
-      firstName:   payload.firstName.trim(),
-      lastName:    payload.lastName.trim(),
+    const meta = {
+      first_name:  payload.firstName.trim(),
+      last_name:   payload.lastName.trim(),
       phone:       payload.phone.trim(),
       institution: payload.institution.trim(),
       role:        payload.role,
       country:     (payload.country || "CR").trim(),
-      createdAt:   new Date().toISOString(),
-      passwordHash: hash,
-      salt,
     };
-    users[email] = record;
-    writeUsers(users);
-    writeSession({ email, issuedAt: Date.now() });
-    emit();
-    return profileOf(record);
+
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password: payload.password,
+      options: { data: meta },
+    });
+
+    if (error) {
+      // Supabase returns a generic error for duplicates; surface as field error.
+      if (/already|registered|exists/i.test(error.message)) {
+        const err = new Error("That email is already registered. Sign in instead.");
+        err.fields = { email: "Already registered" };
+        throw err;
+      }
+      throw new Error(error.message || "Could not create the account.");
+    }
+
+    // If email confirmation is OFF (per project settings), data.session is
+    // populated and the user is already signed in. If confirmation is ON,
+    // data.session is null and we'd need to prompt them to check email.
+    if (data.session) {
+      await refreshFromSession();
+    } else {
+      // Don't leave the UI thinking they're logged in. The caller can show
+      // a "check your inbox" message; we surface a soft-error.
+      const err = new Error("Account created. Please verify your email to sign in.");
+      err.requiresVerification = true;
+      throw err;
+    }
+
+    return cachedUser;
   }
 
   async function login(email, password) {
@@ -173,30 +182,26 @@
     if (!EMAIL_RE.test(email) || !password) {
       throw new Error("Enter your email and password.");
     }
-    const users = readUsers();
-    const record = users[email];
-    // Always run the hashing step — even if the user does not exist — so that
-    // we don't leak account existence via response time.
-    const fakeSalt = "00000000000000000000000000000000";
-    const { hash } = await hashPassword(password, record ? record.salt : fakeSalt);
-    if (!record || !safeEqual(hash, record.passwordHash)) {
-      throw new Error("Email or password is incorrect.");
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      throw new Error(/invalid|credentials/i.test(error.message)
+        ? "Email or password is incorrect."
+        : error.message);
     }
-    writeSession({ email, issuedAt: Date.now() });
-    emit();
-    return profileOf(record);
+    if (data.session) await refreshFromSession();
+    return cachedUser;
   }
 
-  function logout() {
-    writeSession(null);
+  async function logout() {
+    await sb.auth.signOut();
+    cachedUser = null;
     emit();
   }
 
+  // Synchronous — returns the cached profile snapshot. Use refreshFromSession()
+  // (or just await login/register) if you need to be sure it's current.
   function currentUser() {
-    const sess = readSession();
-    if (!sess || !sess.email) return null;
-    const users = readUsers();
-    return profileOf(users[sess.email] || null);
+    return cachedUser;
   }
 
   function requireAuth(opts) {
@@ -204,8 +209,7 @@
     if (u) return u;
     const o = opts || {};
     const target = o.redirect || "/";
-    // Hint the landing to open the auth modal in login mode
-    try { sessionStorage.setItem("ncte_intent_auth", o.intent || "login"); } catch {}
+    try { sessionStorage.setItem("ncte_intent_auth",   o.intent || "login"); } catch {}
     try { sessionStorage.setItem("ncte_intent_return", location.pathname + location.search); } catch {}
     location.replace(target + "#register");
     return null;
@@ -213,16 +217,20 @@
 
   function onChange(cb) {
     listeners.add(cb);
+    // Fire once with the current state so the caller doesn't need to also
+    // read currentUser() right after subscribing.
+    try { cb(cachedUser); } catch (e) { /* noop */ }
     return () => listeners.delete(cb);
   }
 
-  // Cross-tab sync: if another tab signs in/out, react here too
-  window.addEventListener("storage", (e) => {
-    if (e.key === SESSION_KEY || e.key === USERS_KEY) emit();
-  });
-
   window.NCTEAuth = {
-    register, login, logout, currentUser, requireAuth, onChange, escapeHtml,
-    _internal: { hashPassword, validateRegistration }, // exposed for tests only
+    register, login, logout,
+    currentUser, requireAuth, onChange, escapeHtml,
+    // Async refresher for callers that need to be sure the profile is fresh
+    // (e.g. immediately after a manual edit).
+    refresh: refreshFromSession,
+    // Bonus accessors for advanced callers:
+    _client: sb,
+    _internal: { validateRegistration, fetchProfile },
   };
 })();

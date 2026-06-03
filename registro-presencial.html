@@ -1039,32 +1039,54 @@
   <span data-toast-text>Spot saved.</span>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-config.js"></script>
 <script src="auth.js"></script>
 <script>
-(function () {
+(async function () {
   /* ============================================================
-     Save my spot · Day 1 planner state
+     Save my spot · Day 1 planner — Supabase-backed
+     ------------------------------------------------------------
+     - Gate the page behind a real Supabase session.
+     - Read the sessions catalog + the user's current picks.
+     - Wire each card click to the reserve_session() RPC (atomic
+       seat decrement + automatic release of previous block pick).
+     - Subscribe to Realtime so seat counters update live when
+       another attendee reserves or cancels from another browser.
      ============================================================ */
 
-  // Gate: only registered NCTE 2026 attendees can pick in-person sessions.
-  const account = window.NCTEAuth && window.NCTEAuth.requireAuth({
-    redirect: "/",
-    intent: "login",
-  });
-  if (!account) return; // requireAuth has already triggered the redirect
+  const sb = window.supabaseClient;
+  if (!sb) {
+    alert("The registration system failed to load. Please refresh the page.");
+    return;
+  }
 
-  // Per-user planner state (keyed by email so two accounts on the same browser don't collide)
-  const STORAGE_KEY = "ncte_day1_plan_v1::" + account.email;
-  const state = loadState();
-  state.user = { email: account.email, name: [account.firstName, account.lastName].filter(Boolean).join(" ") };
-  saveState();
+  /* ---- 1. Auth gate (async — wait for the Supabase session) ---- */
+  // Show a soft "loading" state on the body so the planner doesn't flicker
+  // unselected → selected when the user's picks arrive.
+  document.body.classList.add("is-loading");
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    try { sessionStorage.setItem("ncte_intent_return", location.pathname); } catch {}
+    location.replace("/#register");
+    return;
+  }
+  // Wait for the profile fetch to settle so the identify card has the right name
+  let account = window.NCTEAuth.currentUser();
+  if (!account && window.NCTEAuth.refresh) {
+    account = await window.NCTEAuth.refresh();
+  }
+  if (!account) account = { email: session.user.email };
 
-  /* ---- Identify (always the signed-in account) ---- */
+  document.body.classList.remove("is-loading");
+
+  /* ---- 2. Identify card ---- */
   const identForm  = document.querySelector("[data-ident-form]");
   const identState = document.querySelector("[data-ident-state]");
 
   function showIdentified(user) {
-    const display = user.name || (user.email || "").split("@")[0];
+    const display  = [user.firstName, user.lastName].filter(Boolean).join(" ").trim()
+                  || (user.email || "").split("@")[0];
     const initials = display.split(/[ .@_-]/).filter(Boolean).map(s => s[0]).slice(0, 2).join("").toUpperCase();
     document.querySelector("[data-ident-initials]").textContent = initials || "NE";
     document.querySelector("[data-ident-name]").textContent     = display;
@@ -1072,128 +1094,252 @@
     identForm.style.display  = "none";
     identState.style.display = "flex";
   }
-  document.querySelector("[data-ident-change]").addEventListener("click", () => {
+  document.querySelector("[data-ident-change]").addEventListener("click", async () => {
     if (confirm("Sign out and return to the homepage?")) {
-      window.NCTEAuth.logout();
+      await window.NCTEAuth.logout();
       location.href = "/";
     }
   });
-  showIdentified(state.user);
+  showIdentified(account);
 
-  /* ---- Room selection ---- */
-  document.querySelectorAll(".nroom[data-slot]").forEach(btn => {
-    if (btn.classList.contains("is-placeholder") || btn.classList.contains("is-full")) return;
-    btn.addEventListener("click", () => {
-      const slot = btn.dataset.slot;
-      const id   = btn.dataset.id;
-      // Toggle off if clicking already-selected
-      if (state.picks[slot] && state.picks[slot].id === id) {
-        state.picks[slot] = null;
-        toast("Spot released.");
-      } else {
-        state.picks[slot] = {
-          id,
-          title:   btn.dataset.title,
-          speaker: btn.dataset.speaker,
-          room:    btn.dataset.room,
+  /* ---- 3. Local model of the planner state ----
+     Mirrors what's in the DB but keeps the UI snappy. Refreshed on Realtime
+     events. */
+  const cards    = [...document.querySelectorAll(".nroom[data-slot][data-id]")];
+  const sessions = new Map();  // sessionId -> { capacity, taken, ...}
+  const picks    = { morning: null, afternoon: null };
+
+  /* ---- 4. Initial data fetch ---- */
+  const sessionIds = cards.map(c => c.dataset.id);
+  const [sessionsRes, picksRes] = await Promise.all([
+    sb.from("sessions").select("id, block, capacity, taken, title, speaker, room").in("id", sessionIds),
+    sb.from("picks").select("session_id, sessions!inner(block, title, speaker, room)").eq("status", "confirmed"),
+  ]);
+
+  if (sessionsRes.error) {
+    console.error("[Planner] sessions fetch failed:", sessionsRes.error);
+    toast("Could not load session capacities. Please refresh.", "error");
+  } else {
+    sessionsRes.data.forEach(s => sessions.set(s.id, s));
+  }
+
+  if (picksRes.error) {
+    console.error("[Planner] picks fetch failed:", picksRes.error);
+  } else {
+    picksRes.data.forEach(p => {
+      if (p.sessions && p.sessions.block in picks) {
+        picks[p.sessions.block] = {
+          id:      p.session_id,
+          title:   p.sessions.title,
+          speaker: p.sessions.speaker,
+          room:    p.sessions.room,
         };
-        toast("Spot saved · " + btn.dataset.title);
       }
-      saveState();
-      renderSelection();
     });
-  });
+  }
 
-  function renderSelection() {
-    // Highlight selected cards
-    document.querySelectorAll(".nroom[data-slot]").forEach(btn => {
-      const slot = btn.dataset.slot;
-      const id   = btn.dataset.id;
-      const isSel = state.picks[slot] && state.picks[slot].id === id;
-      btn.classList.toggle("is-selected", !!isSel);
-    });
+  /* ---- 5. Render ---- */
+  function paintCard(card) {
+    const sessionId = card.dataset.id;
+    const sess = sessions.get(sessionId);
+    const slot = card.dataset.slot;
+    if (!sess) return;
+    const left = Math.max(0, sess.capacity - sess.taken);
+    const seatsEl = card.querySelector(".nroom__seats");
+    if (seatsEl) {
+      const ratio = sess.capacity > 0 ? left / sess.capacity : 0;
+      seatsEl.classList.toggle("is-low",        left > 0 && ratio <= 0.25);
+      seatsEl.classList.toggle("is-full-state", left === 0);
+      const label = seatsEl.querySelector("span:first-child");
+      const bar   = seatsEl.querySelector(".nroom__seats-bar > span");
+      if (label) label.innerHTML = left === 0
+        ? "<b>Full</b> · pick another room"
+        : "<b>" + left + "</b> of " + sess.capacity + " seats left";
+      if (bar) bar.style.width = (ratio * 100).toFixed(1) + "%";
+    }
+    card.classList.toggle("is-full",     left === 0);
+    card.classList.toggle("is-selected", picks[slot] && picks[slot].id === sessionId);
+  }
+
+  function paintAll() {
+    cards.forEach(paintCard);
     // Block status chips
     document.querySelectorAll("[data-block-pick]").forEach(chip => {
       const slot = chip.dataset.blockPick;
-      if (state.picks[slot]) {
-        chip.textContent = "1 of 6 picked";
-        chip.classList.add("is-open");
-      } else {
-        chip.textContent = "Pick 1 of 6";
-        chip.classList.remove("is-open");
-      }
+      if (picks[slot]) { chip.textContent = "1 picked";      chip.classList.add("is-open"); }
+      else             { chip.textContent = "Pick 1 of 6";   chip.classList.remove("is-open"); }
     });
-    // Summary rows
+    // Summary
     ["morning", "afternoon"].forEach(slot => {
       const row = document.querySelector(`[data-sum-row="${slot}"] .nplan-sum__body`);
-      const pick = state.picks[slot];
+      if (!row) return;
+      const pick = picks[slot];
       if (pick) {
         row.classList.remove("is-empty");
-        row.innerHTML = `<b>${escapeHtml(pick.title)}</b><small>${escapeHtml(pick.speaker)} · ${escapeHtml(pick.room)}</small><button type="button" class="nplan-sum__remove" data-sum-remove="${slot}">Remove</button>`;
+        row.innerHTML =
+          `<b>${escapeHtml(pick.title)}</b>` +
+          `<small>${escapeHtml(pick.speaker || "")} · ${escapeHtml(pick.room || "")}</small>` +
+          `<button type="button" class="nplan-sum__remove" data-sum-remove="${slot}">Remove</button>`;
       } else {
         row.classList.add("is-empty");
         row.setAttribute("data-sum-empty", slot);
-        row.innerHTML = `<b>Pick ${slot === "morning" ? "a morning" : "an afternoon"} room →</b><small>Choose one of the 6 simultaneous sessions</small>`;
+        row.innerHTML =
+          `<b>Pick ${slot === "morning" ? "a morning" : "an afternoon"} room →</b>` +
+          `<small>Choose one of the 6 simultaneous sessions</small>`;
       }
     });
     // Counter + CTA
-    const picked = Object.values(state.picks).filter(Boolean).length;
-    document.querySelector("[data-sum-picked]").textContent = picked;
+    const pickedCount = Object.values(picks).filter(Boolean).length;
+    const counter = document.querySelector("[data-sum-picked]");
+    if (counter) counter.textContent = pickedCount;
     const cta = document.querySelector("[data-confirm]");
-    if (picked === 0) {
-      cta.disabled = true;
-      cta.classList.add("is-disabled");
-      cta.textContent = "Pick at least 1 room →";
-    } else {
-      cta.disabled = false;
-      cta.classList.remove("is-disabled");
-      cta.textContent = picked === 2 ? "Confirm my Day 1 plan →" : "Confirm my " + picked + " spot →";
+    if (cta) {
+      if (pickedCount === 0) {
+        cta.disabled = true;
+        cta.classList.add("is-disabled");
+        cta.textContent = "Pick at least 1 room →";
+      } else {
+        cta.disabled = false;
+        cta.classList.remove("is-disabled");
+        cta.textContent = pickedCount === 2
+          ? "Your Day 1 plan is set ✓"
+          : "Your " + pickedCount + " spot is saved ✓";
+      }
     }
   }
 
-  // Inline remove from summary
-  document.querySelector("[data-sum-list]").addEventListener("click", (e) => {
-    const r = e.target.closest("[data-sum-remove]");
-    if (!r) return;
-    const slot = r.getAttribute("data-sum-remove");
-    state.picks[slot] = null;
-    saveState();
-    renderSelection();
-    toast("Spot released.");
+  paintAll();
+
+  /* ---- 6. Click handlers — reserve / change / remove ---- */
+  async function reserveSession(sessionId, card) {
+    if (card.classList.contains("nclickbusy")) return;
+    card.classList.add("nclickbusy");
+    const { data, error } = await sb.rpc("reserve_session", { p_session_id: sessionId });
+    card.classList.remove("nclickbusy");
+    if (error) {
+      console.error("[Planner] reserve_session RPC error:", error);
+      toast(error.message || "Could not reserve the spot.", "error");
+      return;
+    }
+    const row = data && data[0];
+    if (!row || !row.success) {
+      toast((row && row.message) || "Could not reserve the spot.", "error");
+      return;
+    }
+    // Optimistically update local model — Realtime will reconcile shortly.
+    const newSess = sessions.get(sessionId);
+    if (newSess) {
+      const block = newSess.block;
+      // If they had a pick in this block, free its seat counter locally.
+      const old = picks[block];
+      if (old) {
+        const oldSess = sessions.get(old.id);
+        if (oldSess) oldSess.taken = Math.max(0, oldSess.taken - 1);
+      }
+      newSess.taken = Math.min(newSess.capacity, newSess.taken + 1);
+      picks[block] = {
+        id:      sessionId,
+        title:   newSess.title,
+        speaker: newSess.speaker,
+        room:    newSess.room,
+      };
+      paintAll();
+      toast("Spot saved · " + newSess.title);
+    }
+  }
+
+  async function cancelSession(sessionId) {
+    const { data, error } = await sb.rpc("cancel_pick", { p_session_id: sessionId });
+    if (error) {
+      console.error("[Planner] cancel_pick RPC error:", error);
+      toast(error.message || "Could not release the spot.", "error");
+      return;
+    }
+    const row = data && data[0];
+    if (!row || !row.success) {
+      toast((row && row.message) || "Could not release the spot.", "error");
+      return;
+    }
+    const sess = sessions.get(sessionId);
+    if (sess) {
+      sess.taken = Math.max(0, sess.taken - 1);
+      const block = sess.block;
+      if (picks[block] && picks[block].id === sessionId) picks[block] = null;
+      paintAll();
+      toast("Spot released.");
+    }
+  }
+
+  cards.forEach(card => {
+    card.addEventListener("click", () => {
+      if (card.classList.contains("is-placeholder")) return;
+      const sessionId = card.dataset.id;
+      const slot      = card.dataset.slot;
+      const isSel     = picks[slot] && picks[slot].id === sessionId;
+      // Allow click only if (a) releasing the user's own seat or (b)
+      // there's at least one seat left.
+      if (!isSel && card.classList.contains("is-full")) {
+        toast("This session is full. Try another room.", "error");
+        return;
+      }
+      if (isSel) cancelSession(sessionId);
+      else       reserveSession(sessionId, card);
+    });
   });
 
-  // Confirm
-  document.querySelector("[data-confirm]").addEventListener("click", () => {
-    if (!state.user) { showIdentForm(); toast("Enter your email first."); return; }
-    state.confirmedAt = new Date().toISOString();
-    saveState();
-    toast("Your Day 1 plan is confirmed. Check your inbox.");
+  // Inline "Remove" link inside the summary card
+  const sumList = document.querySelector("[data-sum-list]");
+  if (sumList) {
+    sumList.addEventListener("click", (e) => {
+      const r = e.target.closest("[data-sum-remove]");
+      if (!r) return;
+      const slot = r.getAttribute("data-sum-remove");
+      if (picks[slot]) cancelSession(picks[slot].id);
+    });
+  }
+
+  // The "Confirm my plan" CTA used to act as a final submit. With server-side
+  // atomic reservations every click is already confirmed — make the button a
+  // no-op acknowledgement.
+  const confirmBtn = document.querySelector("[data-confirm]");
+  if (confirmBtn) confirmBtn.addEventListener("click", () => {
+    if (Object.values(picks).some(Boolean)) toast("Your plan is saved. See you July 8 ✦");
   });
 
-  renderSelection();
+  /* ---- 7. Realtime — keep counters in sync across attendees ---- */
+  sb.channel("planner-sessions")
+    .on("postgres_changes",
+        { event: "UPDATE", schema: "public", table: "sessions" },
+        (payload) => {
+          const updated = payload.new;
+          if (!sessions.has(updated.id)) return;
+          // Preserve any local fields that aren't in the payload
+          sessions.set(updated.id, { ...sessions.get(updated.id), ...updated });
+          const card = cards.find(c => c.dataset.id === updated.id);
+          if (card) paintCard(card);
+        })
+    .subscribe();
 
-  /* ---- Helpers ---- */
-  function loadState() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch (e) {}
-    return { user: null, picks: { morning: null, afternoon: null }, confirmedAt: null };
-  }
-  function saveState() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
-  }
+  /* ---- 8. Helpers ---- */
   function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c]);
+    return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
+    })[c]);
   }
-  function toast(msg) {
+  function toast(msg, kind) {
     const el = document.querySelector("[data-toast]");
-    document.querySelector("[data-toast-text]").textContent = msg;
+    const txt = document.querySelector("[data-toast-text]");
+    if (!el || !txt) return;
+    txt.textContent = msg;
+    el.classList.toggle("is-error", kind === "error");
     el.classList.add("is-visible");
     clearTimeout(toast._t);
-    toast._t = setTimeout(() => el.classList.remove("is-visible"), 2400);
+    toast._t = setTimeout(() => el.classList.remove("is-visible"), 2800);
   }
-})();
+})().catch(err => {
+  console.error("[Planner] fatal init error:", err);
+  alert("Something went wrong loading the planner. Please refresh the page.");
+});
 </script>
 </body>
 </html>
