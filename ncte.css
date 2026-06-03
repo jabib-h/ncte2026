@@ -155,13 +155,14 @@ img.ribbon-globe { object-fit: contain; }
   font-family: var(--font-sans);
   font-weight: 800; font-size: 15px;
   letter-spacing: .22em;
-  line-height: 1.1;
+  line-height: 1;          /* was 1.1 — tightened ~50% */
 }
 .nhero__edition-stack small {
   color: var(--cccn-red-700, #b50a28);
   font-size: 11px; font-weight: 600;
   letter-spacing: .12em; text-transform: uppercase;
-  margin-top: 3px;
+  margin-top: 1px;         /* was 3px — tightened ~50% */
+  line-height: 1;          /* lock the internal leading too */
   opacity: .82;
 }
 
@@ -1427,9 +1428,21 @@ body.is-detail-open { overflow: hidden; }
 
 /* ---- 600px: large phone landscape ---- */
 @media (max-width: 600px) {
-  /* HEADER — keep brand + hamburger only; Register button stays but compact */
-  .ncte-header__bar { gap: 12px; padding: 12px 0; }
-  .ncte-header__cta { gap: 6px; }
+  /* HEADER — logo pinned to the left edge, Register + hamburger pinned to
+     the right edge. Extra horizontal padding keeps both groups clear of
+     the screen edge so nothing reads as clipped under overflow-x: clip. */
+  .ncte-header__bar {
+    gap: 12px;
+    padding: 12px 0;
+    justify-content: space-between;
+    padding-inline: 6px;     /* on top of the container's gutter (~16px) */
+  }
+  .ncte-header__logo { flex-shrink: 0; }
+  .ncte-header__cta {
+    gap: 6px;
+    margin-left: auto;       /* belt-and-suspenders alongside space-between */
+    flex-shrink: 0;
+  }
   .ncte-header__cta .btn { padding: 10px 14px; font-size: 13px; }
   .ncte-header__cta .btn svg { display: none; }     /* drop the arrow on phones */
 
