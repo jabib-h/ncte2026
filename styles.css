@@ -61,6 +61,22 @@
   /* Layout */
   --max-w: 1240px;
   --gutter: clamp(16px, 3vw, 32px);
+
+  /* ============================================================
+     BRAND MARK SIZES — single source of truth for every logo on the
+     page. If a mark looks too big or too small, edit ONLY here.
+     The mobile values come into play at <600px viewport.
+     The MAIN/WHITE_MAIN_LOGO is a 2.17:1 horizontal lockup, FAVICON
+     is 1.62:1; widths are computed automatically by browsers.
+     ============================================================ */
+  --brand-header-h:     26px;   /* MAIN_LOGO in the top-left header  */
+  --brand-header-h-sm:  22px;
+  --brand-hero-h:       28px;   /* FAVICON next to "NATIONAL CONFERENCE" */
+  --brand-hero-h-sm:    24px;
+  --brand-cta-h:        38px;   /* WHITE_MAIN_LOGO above the final CTA h2 */
+  --brand-cta-h-sm:     30px;
+  --brand-footer-w:     132px;  /* WHITE_MAIN_LOGO in the footer (width-driven) */
+  --brand-footer-w-sm:  110px;
 }
 
 /* Override the browser's default italic on <em> globally — italic Fraunces is
