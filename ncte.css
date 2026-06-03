@@ -23,7 +23,13 @@
 }
 .ncte-header__logo { display: inline-flex; align-items: center; gap: 12px; }
 .ncte-header__brand-mark {
-  height: 44px; width: auto; display: block;
+  /* MAIN_LOGO is a 2.17:1 horizontal lockup.
+     34px tall renders ~74px wide — coherent with the old 44px globe + text
+     lockup that occupied a similar horizontal slot. */
+  height: 34px; width: auto;
+  max-width: 100%;
+  display: block;
+  object-fit: contain;
 }
 /* Legacy ribbon-globe styling (kept for modal/footer uses) */
 img.ribbon-globe { object-fit: contain; }
@@ -116,11 +122,15 @@ img.ribbon-globe { object-fit: contain; }
 }
 @media (max-width: 880px) { .nhero__edition { margin-inline: auto; } }
 .nhero__edition-icon {
-  height: 60px; width: auto;
+  /* FAVICON is a 1.62:1 lockup. 38px tall renders ~61px wide — slim and
+     in proportion with the "NATIONAL CONFERENCE" text stack beside it. */
+  height: 38px; width: auto;
+  max-width: 100%;
   padding-right: 14px;
   border-right: 1px solid rgba(194,15,47,.22);
   flex-shrink: 0;
   display: block;
+  object-fit: contain;
 }
 .nhero__edition-num {
   font-family: var(--font-display, "Fraunces", Georgia, serif);
@@ -750,10 +760,14 @@ a.nsched__row:hover::before { height: 60%; }
   background: radial-gradient(circle at 50% 0%, rgba(255,255,255,.25), transparent 60%);
 }
 .ncta__mark {
-  display: block; height: 64px; width: auto;
+  /* WHITE_MAIN_LOGO is a 2.17:1 horizontal lockup.
+     52px tall renders ~113px wide — readable as a header above the h2
+     without competing with it for attention. */
+  display: block; height: 52px; width: auto; max-width: 100%;
   margin: 0 auto 22px;
   position: relative; z-index: 2;
-  /* Soft drop shadow so the FAVICON pops on the red gradient background */
+  object-fit: contain;
+  /* Soft drop shadow so the mark reads on the red gradient background */
   filter: drop-shadow(0 10px 24px rgba(0,0,0,.25));
 }
 .ncta h2 {
@@ -781,7 +795,10 @@ a.nsched__row:hover::before { height: 60%; }
 @media (max-width: 520px) { .nfooter__grid { grid-template-columns: 1fr; } }
 .nfooter__brand { display: flex; flex-direction: column; gap: 16px; }
 .nfooter__brand-mark {
-  display: block; width: 100%; max-width: 220px; height: auto;
+  /* WHITE_MAIN_LOGO at max-width 180px renders ~83px tall (2.17:1).
+     Matches the previous globe+lockup visual weight in the footer. */
+  display: block; width: 100%; max-width: 180px; height: auto;
+  object-fit: contain;
 }
 .nfooter__brand .ribbon-globe { width: 56px; height: auto; }
 .nfooter__brand b {
@@ -1419,7 +1436,7 @@ body.is-detail-open { overflow: hidden; }
   .ncte-header__cta { gap: 6px; }
   .ncte-header__cta .btn { padding: 10px 14px; font-size: 13px; }
   .ncte-header__cta .btn svg { display: none; }     /* drop the arrow on phones */
-  .ncte-header__brand-mark { height: 36px; }
+  .ncte-header__brand-mark { height: 28px; }
 
   /* Logged-in chip stays compact */
   .ncte-header__user { padding: 4px 12px 4px 4px; gap: 8px; }
@@ -1478,14 +1495,14 @@ body.is-detail-open { overflow: hidden; }
   /* FOOTER — keep 2 cols at 600 but slim spacing */
   .nfooter { padding: 48px 0 20px; }
   .nfooter__grid { gap: 28px; }
-  .nfooter__brand-mark { max-width: 180px; }
+  .nfooter__brand-mark { max-width: 150px; }
   .nfooter__brand .ribbon-globe { width: 48px; }
 
   /* HERO emblem: smaller icon on phones to keep the pill compact */
-  .nhero__edition-icon { height: 48px; padding-right: 12px; }
+  .nhero__edition-icon { height: 32px; padding-right: 12px; }
 
   /* CTA final mark */
-  .ncta__mark { height: 52px; margin-bottom: 18px; }
+  .ncta__mark { height: 42px; margin-bottom: 16px; }
 
   /* AUTH form errors */
   .nmodal__form .field input,
@@ -1499,9 +1516,12 @@ body.is-detail-open { overflow: hidden; }
 
   /* HERO: edition chip can break to its content size; smaller emblem */
   .nhero__edition { padding: 8px 16px 8px 10px; gap: 10px; }
-  .nhero__edition-icon { height: 42px; padding-right: 10px; }
+  .nhero__edition-icon { height: 28px; padding-right: 10px; }
   .nhero__edition-stack strong { font-size: 13px; letter-spacing: .18em; }
   .nhero__edition-stack small { font-size: 10px; }
+  .ncte-header__brand-mark { height: 26px; }
+  .nfooter__brand-mark { max-width: 140px; }
+  .ncta__mark { height: 36px; }
   .nhero__title { font-size: clamp(32px, 10vw, 44px); }
   .nhero__meta strong { font-size: 16px; }
 

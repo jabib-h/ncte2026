@@ -75,7 +75,14 @@ h1 em, h2 em, h3 em, h4 em, h5 em, h6 em,
 }
 
 * { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
+html, body {
+  margin: 0; padding: 0;
+  /* Prevent any element from causing horizontal scroll on phones.
+     `clip` (vs `hidden`) is paint-only so it does NOT break the sticky
+     header. Supported in all evergreen browsers from late 2022. */
+  overflow-x: clip;
+  max-width: 100%;
+}
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
   font-family: var(--font-sans);
@@ -86,9 +93,11 @@ body {
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* Make sure the body itself never grows wider than the viewport */
+  width: 100%;
 }
 
-img, svg, video { max-width: 100%; display: block; }
+img, svg, video { max-width: 100%; display: block; height: auto; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; }
 
