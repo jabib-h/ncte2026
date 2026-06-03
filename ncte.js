@@ -272,6 +272,68 @@
       btn.setAttribute("href", "#register");
       btn.setAttribute("data-auth-open", "signup");
     }
+    renderConferenceCtaLabels();
+  }
+
+  // All marketing-section "Register for the conference" CTAs (the ones that
+  // historically just scrolled to #register) get rewritten to "Save my spot"
+  // when the user is signed in. The footer text link and small nav anchors
+  // are intentionally NOT touched — only `.btn`-shaped CTAs.
+  function renderConferenceCtaLabels() {
+    const loggedIn = !!getUser();
+    document.querySelectorAll('a.btn[href^="#register"]').forEach(a => {
+      if (!a.dataset.ctaLabelOut) a.dataset.ctaLabelOut = a.innerHTML;
+      a.innerHTML = loggedIn
+        ? "Save my spot " + icon("arrow")
+        : a.dataset.ctaLabelOut;
+    });
+  }
+
+  // Global click router for every "register / save my spot" CTA on the page.
+  // The marketing copy has 30+ of these scattered across hero, catalog, CTA
+  // banners and the footer — keeping the routing here means we don't have
+  // to mark them up one by one.
+  function setupConferenceCtaRouter() {
+    document.addEventListener("click", (e) => {
+      const a = e.target.closest("a");
+      if (!a) return;
+      const href = a.getAttribute("href") || "";
+
+      // 1) Any link to the in-person planner.
+      const isSaveSpot = href === "/registro-presencial"
+                      || href.startsWith("/registro-presencial?")
+                      || href.startsWith("/registro-presencial#");
+      // 2) `.btn`-shaped CTAs that historically scrolled to #register (the
+      //    pricing section). Plain anchor links inside nav menus or text
+      //    paragraphs keep their scroll-to-section behavior.
+      const isRegisterCta = a.classList.contains("btn")
+                         && (href === "#register" || href.startsWith("#register"));
+
+      if (!isSaveSpot && !isRegisterCta) return;
+
+      // The modal already handles its own opener attribute — don't double-fire.
+      if (a.hasAttribute("data-auth-open")) return;
+
+      const loggedIn = !!getUser();
+
+      if (loggedIn) {
+        // Already an attendee — every conference-action CTA leads straight
+        // to the planner, even the ones that historically scrolled to the
+        // pricing section.
+        if (isRegisterCta) {
+          e.preventDefault();
+          location.href = "/registro-presencial";
+        }
+        // For `isSaveSpot` the default <a> navigation already goes there.
+        return;
+      }
+
+      // Guest — open the signup modal first and remember to drop them at
+      // the planner once they finish registering.
+      e.preventDefault();
+      try { sessionStorage.setItem("ncte_intent_return", "/registro-presencial"); } catch {}
+      openAuth("signup");
+    });
   }
 
   let _authMode = "signup";
@@ -532,6 +594,7 @@
     wireScrollSpy();
     wireGlobeScrollRotate();
     wireAuth();
+    setupConferenceCtaRouter();
     renderUserSlot();
   }
 
