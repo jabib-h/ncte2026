@@ -13,40 +13,38 @@
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="styles.css"/>
 <link rel="stylesheet" href="ncte.css"/>
+<link rel="stylesheet" href="boarding-pass.css"/>
 <style>
+  /* Sub-header (matches registro-presencial + homepage brand mark) */
   .nsub-header {
     border-bottom: 1px solid var(--line);
-    background: #fff;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: saturate(140%) blur(12px);
     position: sticky; top: 0; z-index: 50;
   }
   .nsub-header .strip-flag { height: 4px; }
   .nsub-header__bar {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 0;
+    gap: 16px; padding: 14px 0;
   }
   .nsub-header__logo {
-    display: flex; align-items: center; gap: 12px;
-    text-decoration: none; color: inherit;
-  }
-  .nsub-header__logo .ribbon-globe { width: 40px; height: auto; }
-  .nsub-header__logo b {
-    font-family: var(--font-sans); font-weight: 800;
-    color: var(--cccn-blue-900); letter-spacing: .02em;
-    font-size: 17px; line-height: 1;
-  }
-  .nsub-header__logo span {
-    display: block; font-size: 10px; letter-spacing: .14em;
-    color: var(--muted); font-weight: 600; margin-top: 3px;
+    display: inline-flex; align-items: center; gap: 12px;
+    text-decoration: none; color: inherit; min-width: 0;
   }
   .nsub-header__back {
     display: inline-flex; align-items: center; gap: 8px;
     color: var(--cccn-blue-900); font-weight: 600;
     text-decoration: none; font-size: 14px;
     padding: 8px 14px; border-radius: 999px;
-    border: 1px solid var(--line);
-    transition: background .15s ease;
+    border: 1px solid var(--line); background: #fff;
+    transition: background .15s ease, border-color .15s ease;
+    flex-shrink: 0; font-family: var(--font-sans);
   }
-  .nsub-header__back:hover { background: var(--cream); }
+  .nsub-header__back:hover { background: var(--cream); border-color: var(--cccn-red); color: var(--cccn-red); }
+  @media (max-width: 480px) {
+    .nsub-header__back-text { display: none; }
+    .nsub-header__back { padding: 8px 10px; }
+  }
 
   /* ============ HERO ============ */
   .nwebr-hero {
@@ -298,10 +296,8 @@
 
   /* ---- Responsive refinements (phone tier) ---- */
   @media (max-width: 720px) {
-    .nsub-header__bar { padding: 12px 0; }
-    .nsub-header__logo .ribbon-globe { width: 36px; }
-    .nsub-header__logo b { font-size: 15px; }
-    .nsub-header__back { padding: 7px 12px; font-size: 13px; }
+    .nsub-header__bar { padding: 10px 0; gap: 12px; }
+    .nsub-header__back { padding: 8px 12px; font-size: 13px; }
 
     .nwebr-hero { padding: 36px 0 18px; }
     .nwebr-hero h1 { font-size: clamp(28px, 8vw, 38px); }
@@ -337,16 +333,12 @@
 <header class="nsub-header">
   <div class="strip-flag"></div>
   <div class="container nsub-header__bar">
-    <a class="nsub-header__logo" href="/" aria-label="Back to home">
-      <img class="ribbon-globe" src="assets/ncte-globe-red.png" alt="NCTE" />
-      <span>
-        <b>NCTE</b>
-        <span>COSTA RICA</span>
-      </span>
+    <a class="nsub-header__logo" href="index.html" aria-label="NCTE 2026 · Back to home">
+      <img class="ncte-header__brand-mark" src="assets/MAIN_LOGO.png" alt="NCTE Costa Rica" />
     </a>
-    <a class="nsub-header__back" href="/">
+    <a class="nsub-header__back" href="index.html">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      Back to home
+      <span class="nsub-header__back-text">Back to home</span>
     </a>
   </div>
 </header>
@@ -562,7 +554,7 @@
             <h4>Prefer the in-person Day 1?</h4>
             <p>The Wednesday in-person pass at CCCN Los Yoses includes both plenaries, all concurrent sessions, networking and Day 2 virtual access.</p>
           </div>
-          <a class="btn btn-dark" href="/registro-presencial">See in-person pass →</a>
+          <a class="btn btn-dark" href="registro-presencial.html">See in-person pass →</a>
         </div>
       </div>
 
@@ -573,13 +565,14 @@
 <footer class="nwebr-foot">
   <div class="container">
     © 2026 CCCN · National Conference for Teachers of English Costa Rica ·
-    <a href="/">Back to NCTE 2026</a>
+    <a href="index.html">Back to NCTE 2026</a>
   </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="supabase-config.js"></script>
 <script src="auth.js"></script>
+<script src="boarding-pass.js"></script>
 <script>
   (function () {
     const form    = document.getElementById('nwebr-form');

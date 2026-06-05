@@ -1,0 +1,332 @@
+/* =============================================================
+   NCTE 2026 — Boarding pass (shared)
+   ----------------------------------------------------------------
+   Visual ticket + modal used from any page where the user is
+   signed in (planner, homepage, future "mi itinerario" view).
+   The .npass node is ALSO the source for the PDF capture, so its
+   pixel dimensions are intentionally fixed at 640px wide; the
+   parent .npass-modal__stage scrolls horizontally on narrow phones
+   instead of squashing the layout, so html2canvas always sees the
+   same render the user sees.
+   ============================================================= */
+
+.npass-modal {
+  position: fixed; inset: 0; z-index: 200;
+  display: none; align-items: flex-start; justify-content: center;
+  padding: 40px 16px;
+  overflow-y: auto;
+  font-family: var(--font-sans);
+}
+.npass-modal.is-open { display: flex; }
+.npass-modal__backdrop {
+  /* Fixed (not absolute inside the scrolling modal) so it covers the
+     whole viewport regardless of how far the user scrolls inside the
+     pass preview. With position:absolute it scrolled with the content
+     and exposed the page underneath at the bottom of long passes. */
+  position: fixed; inset: 0;
+  background: rgba(4, 26, 113, .55);
+  backdrop-filter: blur(4px);
+}
+.npass-modal__inner {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 720px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.npass-modal__actions {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+  background: #fff; border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 18px 40px -22px rgba(0,0,0,.4);
+}
+.npass-modal__title {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 18px; color: var(--cccn-blue-900);
+  margin: 0;
+}
+.npass-modal__buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+.npass-modal__stage {
+  background: var(--cream);
+  border-radius: 14px;
+  padding: 24px;
+  overflow-x: auto;
+  display: flex; justify-content: center;
+}
+
+/* ---- The boarding pass itself ---- */
+.npass {
+  width: 640px; flex-shrink: 0;
+  background: #fff; color: var(--ink);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 60px -24px rgba(0,0,0,.18);
+  font-family: var(--font-sans);
+  line-height: 1.45;
+}
+.npass__strip {
+  height: 6px;
+  background: linear-gradient(90deg, #ee304e 0%, #c20f2f 50%, #2d479d 100%);
+}
+.npass__head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 18px; padding: 22px 28px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.npass__brand { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.npass__logo {
+  height: 38px;
+  width: auto;
+  max-width: 220px;
+  display: block;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+/* Text fallback used when the logo image can't be inlined (e.g. file://
+   testing in Chrome blocks fetch + XHR on local files). Keeps the
+   boarding pass exporting to PDF without a tainted canvas. */
+.npass__logo-fallback {
+  height: 38px;
+  display: inline-flex; align-items: center;
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 18px;
+  color: var(--cccn-red);
+  letter-spacing: -.01em;
+}
+.npass__brand small {
+  font-size: 11px; letter-spacing: .04em;
+  color: var(--muted); font-weight: 600;
+}
+.npass__id {
+  text-align: right; flex-shrink: 0;
+  border-left: 1px dashed var(--line);
+  padding-left: 18px;
+}
+.npass__id small {
+  display: block; font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted); font-weight: 700;
+  margin-bottom: 4px;
+}
+.npass__id b {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 18px; font-weight: 700; color: var(--cccn-red);
+  letter-spacing: .04em;
+}
+
+.npass__attendee {
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--line);
+}
+.npass__avatar {
+  width: 56px; height: 56px; border-radius: 50%; flex: 0 0 56px;
+  background: var(--cccn-blue-900); color: #fff;
+  display: grid; place-items: center;
+  font-weight: 700; font-size: 18px; letter-spacing: .04em;
+}
+.npass__attendee-body { display: flex; flex-direction: column; min-width: 0; }
+.npass__attendee-body small {
+  font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); font-weight: 700; margin-bottom: 2px;
+}
+.npass__attendee-body b {
+  font-size: 18px; color: var(--cccn-blue-900); font-weight: 700;
+  line-height: 1.2;
+}
+.npass__attendee-body span {
+  font-size: 13px; color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.npass__meta {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--line);
+}
+.npass__meta small {
+  display: block; font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted); font-weight: 700;
+  margin-bottom: 4px;
+}
+.npass__meta b {
+  display: block; font-size: 14px; color: var(--cccn-blue-900);
+  font-weight: 700; line-height: 1.3;
+}
+.npass__meta span { display: block; font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+
+.npass__section-label {
+  display: block; font-size: 10.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--cccn-red); font-weight: 700;
+  margin-bottom: 10px;
+}
+.npass__day1, .npass__day2 {
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--line);
+}
+.npass__list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.npass__list li {
+  display: flex; gap: 14px; align-items: flex-start;
+  font-size: 13px; color: var(--ink);
+}
+.npass__list li .npass-time {
+  flex: 0 0 64px; font-weight: 700; color: var(--cccn-red);
+  font-size: 12.5px;
+}
+.npass__list li .npass-body { flex: 1; min-width: 0; }
+.npass__list li b {
+  display: block; font-size: 13.5px; color: var(--cccn-blue-900);
+  font-weight: 700; line-height: 1.3;
+}
+.npass__list li small {
+  display: block; font-size: 12px; color: var(--muted); margin-top: 1px;
+}
+.npass__list li.is-open { opacity: .9; }
+.npass__list li.is-pending b { color: var(--muted); font-style: italic; font-weight: 600; }
+
+.npass__day2 p { margin: 0; font-size: 13px; color: var(--ink-2); }
+.npass__day2 b { color: var(--cccn-blue-900); overflow-wrap: anywhere; }
+
+.npass__qr-section {
+  display: flex; gap: 22px; align-items: center;
+  padding: 22px 28px;
+  background: linear-gradient(180deg, #fff 0%, #fff8f8 100%);
+  border-bottom: 1px solid var(--line);
+}
+.npass__qr {
+  flex: 0 0 150px;
+  width: 150px; height: 150px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px;
+  display: grid; place-items: center;
+}
+.npass__qr svg, .npass__qr canvas, .npass__qr img {
+  width: 100%; height: 100%; display: block;
+}
+.npass__qr-info { flex: 1; min-width: 0; }
+.npass__qr-info small {
+  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); font-weight: 700; display: block; margin-bottom: 4px;
+}
+.npass__qr-info b {
+  display: block; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 20px; font-weight: 700; color: var(--cccn-red);
+  letter-spacing: .04em; margin-bottom: 6px;
+}
+.npass__qr-info span {
+  display: block; font-size: 12px; color: var(--ink-2); line-height: 1.45;
+}
+
+.npass__foot {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 28px; gap: 14px;
+  font-size: 11px; color: var(--muted);
+  background: var(--cream);
+  flex-wrap: wrap;
+}
+
+/* ---- Header chip (logged-in only) ---- */
+.ncte-header__pass {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(238, 48, 78, .08);
+  color: var(--cccn-red);
+  border: 1px solid rgba(238, 48, 78, .18);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font: inherit; font-family: var(--font-sans);
+  font-weight: 700; font-size: 12.5px;
+  cursor: pointer;
+  transition: background .12s ease, color .12s ease, border-color .12s ease;
+}
+.ncte-header__pass:hover { background: var(--cccn-red); color: #fff; border-color: var(--cccn-red); }
+.ncte-header__pass svg { flex-shrink: 0; }
+@media (max-width: 720px) {
+  .ncte-header__pass-text { display: none; }
+  .ncte-header__pass { padding: 7px 9px; }
+}
+
+/* ---- Mobile boarding pass ----
+   The .npass node is fixed at 640px wide on desktop because the PDF
+   capture renders it at that size. On phones we let the pass flow
+   responsively for the on-screen preview; before html2canvas runs,
+   boarding-pass.js temporarily forces width back to 640px so the
+   PDF always matches the desktop layout. */
+@media (max-width: 720px) {
+  .npass-modal { padding: 24px 12px; }
+  .npass-modal__actions {
+    padding: 12px 14px;
+  }
+  .npass-modal__title { font-size: 16px; }
+  .npass-modal__buttons { width: 100%; }
+  .npass-modal__buttons .btn { flex: 1; justify-content: center; padding: 10px 14px; font-size: 13px; }
+  .npass-modal__stage { padding: 14px; overflow: hidden; }
+
+  /* Pass node — fluid on the preview, restored to 640px in JS for capture */
+  .npass {
+    width: 100%; max-width: 100%; min-width: 0;
+    border-radius: 14px;
+  }
+  .npass__head {
+    flex-wrap: wrap;
+    padding: 18px 20px 14px;
+    gap: 12px;
+  }
+  .npass__logo { height: 32px; }
+  .npass__brand small { font-size: 10.5px; }
+  .npass__id {
+    border-left: 0; padding-left: 0;
+    border-top: 1px dashed var(--line); padding-top: 12px;
+    text-align: left;
+    width: 100%;
+  }
+  .npass__id b { font-size: 16px; }
+
+  .npass__attendee { padding: 16px 20px; gap: 14px; }
+  .npass__avatar { width: 48px; height: 48px; flex: 0 0 48px; font-size: 16px; }
+  .npass__attendee-body b { font-size: 16px; }
+  .npass__attendee-body span { font-size: 12.5px; }
+
+  .npass__meta {
+    grid-template-columns: 1fr;
+    padding: 16px 20px;
+    gap: 14px;
+  }
+  .npass__meta b { font-size: 13.5px; }
+  .npass__meta span { font-size: 12px; }
+
+  .npass__day1, .npass__day2 { padding: 14px 20px; }
+  .npass__list li { font-size: 12.5px; }
+  .npass__list li .npass-time { flex: 0 0 56px; font-size: 11.5px; }
+  .npass__list li b { font-size: 13px; }
+  .npass__list li small { font-size: 11.5px; }
+  .npass__day2 p { font-size: 12.5px; }
+
+  /* QR section stacks centred on phones — the QR stays a sharp square */
+  .npass__qr-section {
+    flex-direction: column;
+    gap: 16px; padding: 20px;
+    text-align: center;
+  }
+  .npass__qr { flex: 0 0 140px; width: 140px; height: 140px; }
+  .npass__qr-info { text-align: center; }
+  .npass__qr-info b { font-size: 18px; }
+  .npass__qr-info span { font-size: 11.5px; }
+
+  .npass__foot { padding: 12px 20px; font-size: 10.5px; gap: 8px; }
+}
+
+@media (max-width: 480px) {
+  .npass-modal { padding: 16px 6px; }
+  .npass-modal__stage { padding: 10px; }
+  .npass-modal__actions { padding: 10px 12px; gap: 8px; }
+  .npass-modal__title { font-size: 15px; flex: 1 1 100%; }
+
+  .npass__head, .npass__attendee, .npass__meta,
+  .npass__day1, .npass__day2, .npass__qr-section, .npass__foot {
+    padding-left: 16px; padding-right: 16px;
+  }
+}

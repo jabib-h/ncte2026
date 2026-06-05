@@ -36,6 +36,7 @@
       user:    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
       chev:    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>',
       logout:  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17l5-5-5-5M20 12H9M14 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8"/></svg>',
+      ticket:  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M13 5v2M13 11v2M13 17v2"/></svg>',
       eye:     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
       eyeOff:  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.93 10.93 0 0 1 12 19c-6 0-10-7-10-7a18.5 18.5 0 0 1 4.21-5.21M9.88 4.24A10.45 10.45 0 0 1 12 4c6 0 10 7 10 7a18.45 18.45 0 0 1-2.27 3.34M14.12 14.12A3 3 0 1 1 9.88 9.88M1 1l22 22"/></svg>',
       fb:      '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.5-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/></svg>',
@@ -227,26 +228,78 @@
     if (!slot) return;
     const u = getUser();
     if (u) {
-      // Avatar = link to the planner ("Mi itinerario"). Sign-out is a
-      // dedicated icon button right next to it, kept visually small so
-      // it doesn't compete with the main affordance.
+      // Logged-in header reduces to 2 equal-height pills:
+      //   [user dropdown]   [save my spot (data-cta-primary)]
+      // The dropdown holds 3 menu items: My pass, My itinerary, Sign out.
       slot.innerHTML = `
-        <a class="ncte-header__user" href="/registro-presencial" title="My itinerary">
-          <span class="avatar">${escapeHtml(initialsOf(u))}</span>
-          <span>
-            <b>${escapeHtml(displayName(u))}</b>
-            <small>My itinerary</small>
-          </span>
-        </a>
-        <button class="ncte-header__logout" type="button" data-user-logout aria-label="Sign out" title="Sign out">
-          ${icon("logout")}
-        </button>`;
+        <div class="ncte-header__user-wrap" data-user-menu>
+          <button class="ncte-header__user" type="button"
+                  data-user-toggle
+                  aria-haspopup="true" aria-expanded="false">
+            <span class="avatar">${escapeHtml(initialsOf(u))}</span>
+            <span class="ncte-header__user-name">${escapeHtml(displayName(u))}</span>
+            <span class="ncte-header__user-chev">${icon("chev")}</span>
+          </button>
+          <div class="ncte-header__dropdown" data-user-dropdown role="menu" hidden>
+            <button class="ncte-header__menu-item" type="button" data-pass-open role="menuitem">
+              ${icon("ticket")}
+              <span>My boarding pass</span>
+            </button>
+            <a class="ncte-header__menu-item" href="registro-presencial.html" role="menuitem">
+              ${icon("cal")}
+              <span>My itinerary</span>
+            </a>
+            <button class="ncte-header__menu-item is-danger" type="button" data-user-logout role="menuitem">
+              ${icon("logout")}
+              <span>Sign out</span>
+            </button>
+          </div>
+        </div>`;
+
+      const menu     = slot.querySelector("[data-user-menu]");
+      const toggle   = slot.querySelector("[data-user-toggle]");
+      const dropdown = slot.querySelector("[data-user-dropdown]");
+
+      function closeMenu() {
+        dropdown.hidden = true;
+        toggle.setAttribute("aria-expanded", "false");
+        menu.classList.remove("is-open");
+      }
+      function openMenu() {
+        dropdown.hidden = false;
+        toggle.setAttribute("aria-expanded", "true");
+        menu.classList.add("is-open");
+      }
+      toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdown.hidden ? openMenu() : closeMenu();
+      });
+      // Click outside the menu → close
+      document.addEventListener("click", (e) => {
+        if (!menu.contains(e.target)) closeMenu();
+      });
+      // Escape → close
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !dropdown.hidden) closeMenu();
+      });
+      // Close on any in-menu click (link or button) so dropdown collapses
+      // before the action runs.
+      dropdown.addEventListener("click", () => closeMenu());
+
+      slot.querySelector("[data-pass-open]").addEventListener("click", (e) => {
+        if (window.NCTEBoardingPass) {
+          window.NCTEBoardingPass.preview({ button: e.currentTarget });
+        } else {
+          // Defensive fallback for pages where the module didn't load —
+          // send the user to the planner, which always has it.
+          location.href = "registro-presencial.html";
+        }
+      });
       slot.querySelector("[data-user-logout]").addEventListener("click", async () => {
         await window.NCTEAuth.logout();
         toast("Signed out.");
-        // Send them back to the homepage if they were on a gated page.
         if (location.pathname.indexOf("registro-presencial") !== -1) {
-          location.href = "/";
+          location.href = "index.html";
         }
       });
     } else {
@@ -264,7 +317,7 @@
     if (getUser()) {
       btn.textContent = "Save my spot ";
       btn.insertAdjacentHTML("beforeend", icon("arrow"));
-      btn.setAttribute("href", "/registro-presencial");
+      btn.setAttribute("href", "registro-presencial.html");
       btn.removeAttribute("data-auth-open");
     } else {
       btn.textContent = "Register ";
@@ -299,10 +352,11 @@
       if (!a) return;
       const href = a.getAttribute("href") || "";
 
-      // 1) Any link to the in-person planner.
-      const isSaveSpot = href === "/registro-presencial"
-                      || href.startsWith("/registro-presencial?")
-                      || href.startsWith("/registro-presencial#");
+      // 1) Any link to the in-person planner — either the production clean
+      //    URL (`/registro-presencial`) or the relative file form
+      //    (`registro-presencial.html`) we use for portability across
+      //    file://, Vercel and Azure SWA.
+      const isSaveSpot = /(?:^|\/)registro-presencial(?:\.html)?(?:[?#]|$)/.test(href);
       // 2) `.btn`-shaped CTAs that historically scrolled to #register (the
       //    pricing section). Plain anchor links inside nav menus or text
       //    paragraphs keep their scroll-to-section behavior.
@@ -322,7 +376,7 @@
         // pricing section.
         if (isRegisterCta) {
           e.preventDefault();
-          location.href = "/registro-presencial";
+          location.href = "registro-presencial.html";
         }
         // For `isSaveSpot` the default <a> navigation already goes there.
         return;
@@ -331,7 +385,7 @@
       // Guest — open the signup modal first and remember to drop them at
       // the planner once they finish registering.
       e.preventDefault();
-      try { sessionStorage.setItem("ncte_intent_return", "/registro-presencial"); } catch {}
+      try { sessionStorage.setItem("ncte_intent_return", "registro-presencial.html"); } catch {}
       openAuth("signup");
     });
   }

@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Validate · NCTE 2026</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"/>
+<link rel="alternate icon" type="image/png" href="../assets/FAVICON.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --cccn-red:        #ee304e;
+    --cccn-red-700:    #c20f2f;
+    --cccn-blue-900:   #041a71;
+    --cccn-blue:       #2d479d;
+    --ink:             #0b1320;
+    --ink-2:           #3a4253;
+    --muted:           #717584;
+    --line:            #e3e6ee;
+    --cream:           #f7f6f1;
+    --ok:              #1f7a3a;
+    --ok-light:        #e8f6ee;
+    --warn:            #b45309;
+    --warn-light:      #fef3c7;
+    --err:             #c20f2f;
+    --err-light:       #fde8ec;
+    --font-sans:       "Raleway", Arial, system-ui, sans-serif;
+    --font-display:    "Fraunces", "Times New Roman", Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; overflow-x: clip; max-width: 100%; }
+  body {
+    font-family: var(--font-sans); color: var(--ink);
+    background: linear-gradient(180deg, var(--cream) 0%, #fff 100%);
+    min-height: 100vh; min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    padding: 20px 16px 40px;
+  }
+
+  .v-wrap {
+    max-width: 480px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .v-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--line);
+  }
+  .v-header img { height: 36px; width: auto; }
+  .v-header .v-staff-badge {
+    background: rgba(238,48,78,.08); color: var(--cccn-red);
+    border: 1px solid rgba(238,48,78,.18);
+    padding: 5px 11px; border-radius: 999px;
+    font-size: 11px; font-weight: 800; letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  /* ---- Status banner (top of card) ---- */
+  .v-status {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 20px; border-radius: 14px;
+    border: 1px solid transparent;
+  }
+  .v-status__icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .v-status__icon svg { width: 24px; height: 24px; }
+  .v-status__text {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .v-status__text b {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 22px; line-height: 1.1; color: var(--cccn-blue-900);
+  }
+  .v-status__text small { font-size: 13px; color: var(--ink-2); }
+
+  .v-status.is-valid    { background: var(--ok-light);   border-color: #bce3c8; }
+  .v-status.is-valid    .v-status__icon { background: var(--ok); color: #fff; }
+  .v-status.is-checked  { background: var(--warn-light); border-color: #fcd34d; }
+  .v-status.is-checked  .v-status__icon { background: var(--warn); color: #fff; }
+  .v-status.is-error    { background: var(--err-light);  border-color: #fbb6c2; }
+  .v-status.is-error    .v-status__icon { background: var(--err); color: #fff; }
+
+  /* ---- Attendee card ---- */
+  .v-card {
+    background: #fff; border: 1px solid var(--line); border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 18px 40px -24px rgba(4,26,113,.18);
+  }
+  .v-card__strip {
+    height: 4px;
+    background: linear-gradient(90deg, var(--cccn-red), var(--cccn-blue));
+  }
+  .v-attendee {
+    display: flex; align-items: center; gap: 14px;
+    padding: 20px;
+  }
+  .v-attendee__avatar {
+    width: 52px; height: 52px; border-radius: 50%; flex: 0 0 52px;
+    background: var(--cccn-blue-900); color: #fff;
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 17px;
+  }
+  .v-attendee__body { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+  .v-attendee__body small {
+    font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700;
+  }
+  .v-attendee__body b {
+    font-size: 18px; line-height: 1.2; color: var(--cccn-blue-900); font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+  .v-attendee__body .v-code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px; color: var(--cccn-red); font-weight: 700;
+    letter-spacing: .04em;
+  }
+
+  /* ---- Details rows ---- */
+  .v-details {
+    display: flex; flex-direction: column;
+    border-top: 1px solid var(--line);
+  }
+  .v-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 12px 20px; gap: 14px;
+    border-bottom: 1px dashed var(--line);
+    font-size: 14px;
+  }
+  .v-row:last-child { border-bottom: 0; }
+  .v-row small {
+    flex: 0 0 90px;
+    font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; padding-top: 2px;
+  }
+  .v-row span { flex: 1; text-align: right; color: var(--ink); overflow-wrap: anywhere; }
+  .v-row a { color: var(--cccn-blue-900); text-decoration: none; font-weight: 600; }
+
+  /* ---- Picks list ---- */
+  .v-picks {
+    padding: 16px 20px 18px;
+    border-top: 1px solid var(--line);
+    background: var(--cream);
+  }
+  .v-picks small {
+    display: block; font-size: 10.5px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--cccn-red);
+    font-weight: 700; margin-bottom: 10px;
+  }
+  .v-picks ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .v-picks li {
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px 12px;
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13px;
+  }
+  .v-picks li .v-block {
+    flex: 0 0 64px;
+    font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--cccn-red); font-weight: 700;
+  }
+  .v-picks li b {
+    display: block; font-size: 13.5px; color: var(--cccn-blue-900);
+    font-weight: 700; line-height: 1.3;
+  }
+  .v-picks li small {
+    display: block; margin: 2px 0 0; font-size: 12px;
+    color: var(--muted); font-weight: 400; letter-spacing: 0;
+    text-transform: none;
+  }
+  .v-picks__empty {
+    background: #fff; border: 1px dashed var(--line); border-radius: 10px;
+    padding: 12px; text-align: center; color: var(--muted); font-size: 13px;
+    font-style: italic;
+  }
+
+  /* ---- Check-in CTA ---- */
+  .v-cta {
+    display: block; width: 100%;
+    background: var(--cccn-red); color: #fff;
+    border: 0; border-radius: 14px;
+    padding: 18px 20px;
+    font: inherit; font-family: var(--font-sans);
+    font-weight: 800; font-size: 16px;
+    cursor: pointer; text-align: center;
+    box-shadow: 0 16px 36px -16px rgba(195,15,40,.4);
+    transition: transform .12s ease, box-shadow .15s ease;
+  }
+  .v-cta:hover  { transform: translateY(-1px); }
+  .v-cta:active { transform: translateY(1px); }
+  .v-cta:disabled {
+    background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none;
+  }
+  .v-cta__hint {
+    text-align: center; font-size: 12px; color: var(--muted);
+    margin-top: 10px; line-height: 1.4;
+  }
+
+  /* ---- Manual code entry (when QR didn't include the code) ---- */
+  .v-manual {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 22px; text-align: center;
+  }
+  .v-manual h2 {
+    font-family: var(--font-display); font-weight: 700;
+    margin: 0 0 8px; color: var(--cccn-blue-900); font-size: 22px;
+  }
+  .v-manual p { margin: 0 0 16px; color: var(--ink-2); font-size: 14px; }
+  .v-manual form { display: flex; gap: 8px; }
+  .v-manual input {
+    flex: 1; padding: 12px 14px; font: inherit;
+    border: 1.5px solid var(--line); border-radius: 10px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 16px; text-transform: uppercase; letter-spacing: .04em;
+  }
+  .v-manual input:focus {
+    outline: none; border-color: var(--cccn-red);
+    box-shadow: 0 0 0 3px rgba(238,48,78,.16);
+  }
+  .v-manual button {
+    background: var(--cccn-blue-900); color: #fff; border: 0;
+    border-radius: 10px; padding: 12px 18px;
+    font: inherit; font-weight: 700; cursor: pointer;
+  }
+
+  .v-loading {
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px; color: var(--muted); font-size: 14px;
+  }
+  .v-spinner {
+    width: 22px; height: 22px; margin-right: 10px;
+    border: 3px solid var(--line); border-top-color: var(--cccn-red);
+    border-radius: 50%;
+    animation: v-spin .8s linear infinite;
+  }
+  @keyframes v-spin { to { transform: rotate(360deg); } }
+
+  .v-foot {
+    text-align: center; font-size: 11px; color: var(--muted);
+    padding: 10px 0; line-height: 1.5;
+  }
+  .v-foot a, .v-foot button {
+    color: var(--cccn-blue-900); font-weight: 600; text-decoration: none;
+    background: transparent; border: 0; padding: 0; cursor: pointer;
+    font: inherit; font-size: 11px;
+  }
+  .v-foot a:hover, .v-foot button:hover { color: var(--cccn-red); }
+  .v-foot__sep { color: var(--line); margin: 0 6px; }
+
+  /* ---- Staff passcode gate (shown until session-unlocked) ---- */
+  .v-gate {
+    background: #fff; border: 1px solid var(--line); border-radius: 18px;
+    padding: 28px 24px; text-align: center;
+    box-shadow: 0 18px 40px -24px rgba(4,26,113,.18);
+  }
+  .v-gate__icon {
+    width: 64px; height: 64px; margin: 0 auto 16px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--cccn-red), var(--cccn-blue));
+    color: #fff;
+    display: grid; place-items: center;
+  }
+  .v-gate__icon svg { width: 30px; height: 30px; }
+  .v-gate h2 {
+    font-family: var(--font-display); font-weight: 700;
+    margin: 0 0 8px; color: var(--cccn-blue-900); font-size: 22px;
+    letter-spacing: -.01em;
+  }
+  .v-gate > p {
+    margin: 0 0 22px; color: var(--ink-2); font-size: 14px;
+    line-height: 1.55; max-width: 360px; margin-inline: auto;
+  }
+  .v-gate form { display: flex; gap: 8px; max-width: 360px; margin: 0 auto; }
+  .v-gate input {
+    flex: 1; padding: 13px 14px;
+    border: 1.5px solid var(--line); border-radius: 10px;
+    font: inherit; font-family: var(--font-sans);
+    font-size: 16px;
+    letter-spacing: .02em;
+  }
+  .v-gate input:focus {
+    outline: none; border-color: var(--cccn-red);
+    box-shadow: 0 0 0 3px rgba(238,48,78,.16);
+  }
+  .v-gate button {
+    background: var(--cccn-red); color: #fff; border: 0;
+    border-radius: 10px; padding: 0 20px;
+    font: inherit; font-family: var(--font-sans);
+    font-weight: 700; font-size: 14px;
+    cursor: pointer; transition: background .12s ease;
+  }
+  .v-gate button:hover { background: var(--cccn-red-700); }
+  .v-gate__error {
+    margin: 14px auto 0; max-width: 360px;
+    padding: 10px 14px;
+    background: var(--err-light); color: var(--err);
+    border: 1px solid #fbb6c2;
+    border-radius: 10px;
+    font-size: 13px; font-weight: 600;
+  }
+  .v-gate__hint {
+    margin-top: 18px; font-size: 12px; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<main class="v-wrap" data-app>
+  <header class="v-header">
+    <img src="../assets/MAIN_LOGO.png" alt="NCTE 2026 · CCCN"/>
+    <span class="v-staff-badge">Staff · Entrance</span>
+  </header>
+
+  <div class="v-loading" data-loading>
+    <span class="v-spinner"></span> Looking up ticket…
+  </div>
+
+  <div data-content style="display:none;"></div>
+
+  <footer class="v-foot">
+    Validator for staff use only.
+    <a href="../index.html">Back to NCTE 2026</a>
+    <span class="v-foot__sep">·</span>
+    <button type="button" data-staff-lock hidden>Lock this device</button>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+(function () {
+  const SUPABASE_URL = "https://tdhdwjsugijnxfaqzxnu.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_ZRWAJiHd2YoX76sPIR9_2A_5pV-ADIf";
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+
+  const loadingEl = document.querySelector("[data-loading]");
+  const contentEl = document.querySelector("[data-content]");
+
+  function show(html) {
+    loadingEl.style.display = "none";
+    contentEl.style.display = "";
+    contentEl.innerHTML = html;
+  }
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+      ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" })[c]);
+  }
+  function initialsOf(first, last, fallback) {
+    const src = ((first || "") + " " + (last || "")).trim() || fallback || "";
+    return src.split(/[ .@_-]/).filter(Boolean).map(s => s[0]).slice(0,2).join("").toUpperCase() || "NE";
+  }
+  function fmtTime(ts) {
+    if (!ts) return "";
+    try {
+      return new Date(ts).toLocaleString("en-CR", {
+        month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
+      });
+    } catch { return ts; }
+  }
+  function roleLabel(r) {
+    return ({
+      teacher:     "Teacher",
+      coordinator: "Coordinator",
+      trainee:     "Trainee",
+      student:     "Student",
+      other:       "Other",
+    })[r] || r || "—";
+  }
+
+  // ----- Extract code from the URL ----------------------------------------
+  // Production: /v/NCTE-XYZ123              (path param via SWA rewrite)
+  // Local file: /v/index.html?code=NCTE-XYZ (query string fallback)
+  function readCode() {
+    // Path: /v/NCTE-XYZ123
+    const m = location.pathname.match(/\/v\/(NCTE-[A-Za-z0-9]+)\/?$/i);
+    if (m) return m[1].toUpperCase();
+    // Query: ?code=NCTE-XYZ123
+    const q = new URLSearchParams(location.search).get("code");
+    if (q) return q.trim().toUpperCase();
+    return null;
+  }
+
+  function manualEntryForm(prefill) {
+    return `
+      <div class="v-manual">
+        <h2>Enter ticket code</h2>
+        <p>No code in the URL. Type the <b>NCTE-XXXXXX</b> from the boarding pass.</p>
+        <form data-manual-form>
+          <input type="text" name="code" placeholder="NCTE-XXXXXX"
+                 value="${escapeHtml(prefill || '')}" autocomplete="off"
+                 maxlength="11" required pattern="^NCTE-[A-Za-z0-9]{6}$"/>
+          <button type="submit">Look up</button>
+        </form>
+      </div>`;
+  }
+
+  function renderError(message, code) {
+    show(`
+      <div class="v-status is-error">
+        <div class="v-status__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </div>
+        <div class="v-status__text">
+          <b>Not valid</b>
+          <small>${escapeHtml(message)}</small>
+        </div>
+      </div>
+      ${manualEntryForm(code)}
+    `);
+    wireManualForm();
+  }
+
+  function renderAttendee(d) {
+    const already   = !!d.checked_in_at;
+    const statusCls = already ? "is-checked" : "is-valid";
+    const statusIco = already
+      ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l3 2"/></svg>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+    const statusTtl = already ? "Already checked in" : "Valid ticket";
+    const statusSub = already
+      ? `Scanned ${fmtTime(d.checked_in_at)} CR`
+      : "Tap the button below to mark check-in";
+
+    const fullName = ((d.first_name || "") + " " + (d.last_name || "")).trim()
+                  || (d.email || "").split("@")[0];
+
+    const picksRows = (d.picks && d.picks.length)
+      ? `<ul>${d.picks.map(p => `
+          <li>
+            <span class="v-block">${escapeHtml(p.block)}</span>
+            <div>
+              <b>${escapeHtml(p.title)}</b>
+              <small>${escapeHtml(p.speaker || "")}${p.room ? " · " + escapeHtml(p.room) : ""}</small>
+            </div>
+          </li>`).join("")}</ul>`
+      : `<div class="v-picks__empty">No concurrent picks reserved. Plenaries + networking session are open.</div>`;
+
+    show(`
+      <div class="v-status ${statusCls}">
+        <div class="v-status__icon">${statusIco}</div>
+        <div class="v-status__text">
+          <b>${escapeHtml(statusTtl)}</b>
+          <small>${escapeHtml(statusSub)}</small>
+        </div>
+      </div>
+
+      <div class="v-card">
+        <div class="v-card__strip"></div>
+        <div class="v-attendee">
+          <div class="v-attendee__avatar">${escapeHtml(initialsOf(d.first_name, d.last_name, d.email))}</div>
+          <div class="v-attendee__body">
+            <small>Attendee</small>
+            <b>${escapeHtml(fullName)}</b>
+            <span class="v-code">${escapeHtml(d.ticket_code)}</span>
+          </div>
+        </div>
+        <div class="v-details">
+          <div class="v-row"><small>Email</small><span><a href="mailto:${escapeHtml(d.email)}">${escapeHtml(d.email)}</a></span></div>
+          <div class="v-row"><small>Phone</small><span><a href="tel:${escapeHtml(d.phone)}">${escapeHtml(d.phone || "—")}</a></span></div>
+          <div class="v-row"><small>Institution</small><span>${escapeHtml(d.institution || "—")}</span></div>
+          <div class="v-row"><small>Role</small><span>${escapeHtml(roleLabel(d.role))} · ${escapeHtml(d.country || "—")}</span></div>
+        </div>
+        <div class="v-picks">
+          <small>Day 1 reserved picks</small>
+          ${picksRows}
+        </div>
+      </div>
+
+      ${already
+        ? `<p class="v-cta__hint">Already checked in at ${fmtTime(d.checked_in_at)} CR. No need to re-scan.</p>`
+        : `<button class="v-cta" data-checkin>Mark check-in →</button>
+           <p class="v-cta__hint">This stamps the entry timestamp. Cannot be undone from this page.</p>`}
+    `);
+
+    if (!already) {
+      document.querySelector("[data-checkin]").addEventListener("click", () => doCheckIn(d.ticket_code));
+    }
+  }
+
+  async function lookup(code) {
+    loadingEl.style.display = "";
+    contentEl.style.display = "none";
+    try {
+      const { data, error } = await sb.rpc("lookup_ticket", { p_code: code });
+      if (error) throw error;
+      const row = data && data[0];
+      if (!row) {
+        renderError("Unexpected empty response.", code);
+        return;
+      }
+      if (!row.found) {
+        renderError(row.message || "Ticket not found.", code);
+        return;
+      }
+      renderAttendee(row);
+    } catch (err) {
+      console.error("[Validator] lookup_ticket:", err);
+      renderError(err.message || "Could not reach the server.", code);
+    }
+  }
+
+  async function doCheckIn(code) {
+    const btn = document.querySelector("[data-checkin]");
+    if (!btn) return;
+    btn.disabled = true;
+    btn.textContent = "Checking in…";
+    try {
+      const { data, error } = await sb.rpc("check_in", { p_code: code });
+      if (error) throw error;
+      const row = data && data[0];
+      if (!row || !row.success) {
+        btn.disabled = false;
+        btn.textContent = "Mark check-in →";
+        alert((row && row.message) || "Could not check in.");
+        return;
+      }
+      // Re-render so the banner flips to "Already checked in" and the
+      // button is replaced by the hint copy.
+      lookup(code);
+    } catch (err) {
+      console.error("[Validator] check_in:", err);
+      btn.disabled = false;
+      btn.textContent = "Mark check-in →";
+      alert("Check-in failed: " + (err.message || "network error"));
+    }
+  }
+
+  function wireManualForm() {
+    const f = document.querySelector("[data-manual-form]");
+    if (!f) return;
+    f.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const val = new FormData(f).get("code");
+      if (!val) return;
+      const code = String(val).trim().toUpperCase();
+      // Soft-validate format before round-tripping.
+      if (!/^NCTE-[A-Z0-9]{6}$/.test(code)) {
+        alert("Expected format: NCTE-XXXXXX (6 letters/digits).");
+        return;
+      }
+      // Update URL so a reload keeps the code (without polluting history).
+      const newUrl = location.pathname.replace(/\/v\/?.*$/, "/v/") + code;
+      history.replaceState(null, "", newUrl);
+      lookup(code);
+    });
+  }
+
+  /* =========================================================
+     Staff passcode gate
+     ----------------------------------------------------------
+     The validator URL is publicly reachable (must be — the QR opens
+     it directly from a phone camera). So we put a soft passcode in
+     front. Anyone with view-source can see the literal value; this
+     is a deterrent for casual visitors, not a cryptographic lock.
+     The session-storage unlock survives in-tab navigation but
+     expires when the staff closes the browser tab.
+     ========================================================= */
+  const STAFF_CODE   = "C3ntr0-2026";
+  const UNLOCK_KEY   = "ncte_staff_unlocked";
+
+  function isUnlocked() {
+    try { return sessionStorage.getItem(UNLOCK_KEY) === "yes"; } catch { return false; }
+  }
+  function setUnlocked(yes) {
+    try {
+      if (yes) sessionStorage.setItem(UNLOCK_KEY, "yes");
+      else     sessionStorage.removeItem(UNLOCK_KEY);
+    } catch {}
+  }
+
+  function renderGate(errorMessage) {
+    show(`
+      <div class="v-gate">
+        <div class="v-gate__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        </div>
+        <h2>Staff access required</h2>
+        <p>This validator is reserved for CCCN team members at the entrance. Enter the staff code to continue.</p>
+        <form data-gate-form>
+          <input type="password" name="code" placeholder="Staff code"
+                 autocomplete="off" autocapitalize="off" autocorrect="off"
+                 spellcheck="false" required autofocus/>
+          <button type="submit">Unlock</button>
+        </form>
+        ${errorMessage ? `<div class="v-gate__error">${escapeHtml(errorMessage)}</div>` : ""}
+        <p class="v-gate__hint">Unlock stays active until you close this tab.</p>
+      </div>
+    `);
+    document.querySelector("[data-staff-lock]").hidden = true;
+
+    const f = document.querySelector("[data-gate-form]");
+    f.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const val = String(new FormData(f).get("code") || "");
+      if (val === STAFF_CODE) {
+        setUnlocked(true);
+        bootValidator();
+      } else {
+        renderGate("Incorrect code. Try again.");
+      }
+    });
+  }
+
+  function bootValidator() {
+    // Reveal the manual lock-out button now that we're unlocked.
+    const lockBtn = document.querySelector("[data-staff-lock]");
+    lockBtn.hidden = false;
+    lockBtn.onclick = () => {
+      setUnlocked(false);
+      renderGate();
+    };
+    const code = readCode();
+    if (!code) {
+      show(manualEntryForm(""));
+      wireManualForm();
+    } else {
+      lookup(code);
+    }
+  }
+
+  // ----- Boot -------------------------------------------------------------
+  if (isUnlocked()) bootValidator();
+  else              renderGate();
+})();
+</script>
+</body>
+</html>

@@ -13,35 +13,54 @@
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="styles.css"/>
 <link rel="stylesheet" href="ncte.css"/>
+<link rel="stylesheet" href="boarding-pass.css"/>
 <style>
   /* ============================================================
      Save my spot · Day 1 in-person planner
      ============================================================ */
 
-  /* ---- Sub-header (shared with other inner pages) ---- */
+  /* ---- Sub-header (shared with other inner pages) ----
+     Uses the same MAIN_LOGO brand mark as the homepage header so the
+     visual identity is consistent across the funnel. Height is driven
+     by the global --brand-header-h tokens (auto-swap on phones via the
+     media-query overrides in ncte.css). */
   .nsub-header {
     border-bottom: 1px solid var(--line);
-    background: #fff;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: saturate(140%) blur(12px);
     position: sticky; top: 0; z-index: 50;
   }
   .nsub-header .strip-flag { height: 4px; }
   .nsub-header__bar {
+    position: relative;       /* anchor for the centered page tag */
     display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
     padding: 14px 0;
   }
   .nsub-header__logo {
-    display: flex; align-items: center; gap: 12px;
+    display: inline-flex; align-items: center; gap: 12px;
     text-decoration: none; color: inherit;
+    min-width: 0;       /* allow the brand mark to shrink on tiny phones */
   }
-  .nsub-header__logo .ribbon-globe { width: 40px; height: auto; }
-  .nsub-header__logo b {
-    font-family: var(--font-sans); font-weight: 800;
-    color: var(--cccn-blue-900); letter-spacing: .02em;
-    font-size: 17px; line-height: 1;
+  /* "My Itinerary" identifier — absolutely centered so it doesn't disturb
+     the logo/back flex layout. Hidden on phones where space is too tight
+     and the hero copy already identifies the page. */
+  .nsub-header__page-tag {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 6px 14px; border-radius: 999px;
+    background: rgba(238, 48, 78, .08);
+    color: var(--cccn-red);
+    border: 1px solid rgba(238, 48, 78, .18);
+    font-family: var(--font-sans);
+    font-size: 12.5px; font-weight: 700; letter-spacing: .04em;
+    white-space: nowrap;
+    pointer-events: none;
   }
-  .nsub-header__logo span {
-    display: block; font-size: 10px; letter-spacing: .14em;
-    color: var(--muted); font-weight: 600; margin-top: 3px;
+  .nsub-header__page-tag svg { flex-shrink: 0; }
+  @media (max-width: 720px) {
+    .nsub-header__page-tag { display: none; }
   }
   .nsub-header__back {
     display: inline-flex; align-items: center; gap: 8px;
@@ -49,9 +68,12 @@
     text-decoration: none; font-size: 14px;
     padding: 8px 14px; border-radius: 999px;
     border: 1px solid var(--line);
-    transition: background .15s ease;
+    background: #fff;
+    transition: background .15s ease, border-color .15s ease;
+    flex-shrink: 0;
+    font-family: var(--font-sans);
   }
-  .nsub-header__back:hover { background: var(--cream); }
+  .nsub-header__back:hover { background: var(--cream); border-color: var(--cccn-red); color: var(--cccn-red); }
 
   /* ---- Hero ---- */
   .nplan-hero {
@@ -454,6 +476,24 @@
   .nplan-sum__cta:disabled, .nplan-sum__cta.is-disabled {
     background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none;
   }
+  /* Secondary CTA — "See my boarding pass" opens the visual preview without
+     producing the PDF. Same shape as the primary but ghost styling. */
+  .nplan-sum__cta-ghost {
+    display: block; width: 100%;
+    background: transparent; color: var(--cccn-blue-900);
+    border: 1.5px solid var(--cccn-blue-900);
+    border-radius: 12px;
+    padding: 11px 18px; text-align: center;
+    font: inherit; font-family: var(--font-sans);
+    font-weight: 700; font-size: 13.5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background .12s ease, color .12s ease;
+  }
+  .nplan-sum__cta-ghost:hover { background: var(--cccn-blue-900); color: #fff; }
+  .nplan-sum__cta-ghost:disabled {
+    border-color: #cbd5e1; color: #cbd5e1; cursor: not-allowed;
+  }
   .nplan-sum__note {
     font-size: 11.5px; color: var(--muted); text-align: center;
     margin: 12px 0 0; line-height: 1.45;
@@ -477,6 +517,36 @@
   }
   .nplan-toast svg { color: #67e0a3; }
 
+  /* ---- Overflow safety nets (BEFORE breakpoints — apply everywhere) ---- */
+  .nplan-hero__meta strong,
+  .nplan-ident p,
+  .nblock__head-text h3,
+  .nroom h4,
+  .nslot-open__body b,
+  .nslot-open__body small,
+  .nplan-sum__body small {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  /* Grid + flex children that should never push width past their column */
+  .nplan__grid > *,
+  .nblock,
+  .nrooms > *,
+  .nroom,
+  .nblock__head-text,
+  .nroom__speaker > div,
+  .nslot-open__body,
+  .nplan-sum__body { min-width: 0; }
+  .nplan-ident__state b,
+  .nplan-ident__state small { overflow-wrap: anywhere; }
+  /* Belt: keep horizontal scroll suppressed on every section */
+  .nplan-hero, .nplan, .nplan-foot { overflow-x: clip; }
+  /* All form controls inherit the page font so Raleway carries through */
+  .nplan-ident input,
+  .nplan-ident button,
+  .nplan-sum__cta,
+  .nplan-sum__remove { font-family: var(--font-sans); }
+
   /* ---- Responsive ---- */
   @media (max-width: 960px) {
     .nplan-hero__grid { grid-template-columns: 1fr; gap: 32px; }
@@ -485,20 +555,20 @@
     .nrooms { grid-template-columns: 1fr; }
   }
   @media (max-width: 720px) {
-    /* Sub-header tightens */
-    .nsub-header__bar { padding: 12px 0; }
-    .nsub-header__logo .ribbon-globe { width: 36px; }
-    .nsub-header__logo b { font-size: 15px; }
-    .nsub-header__logo span { font-size: 9px; }
-    .nsub-header__back { padding: 7px 12px; font-size: 13px; }
+    /* Sub-header tightens: the back CTA loses its label to keep the row
+       single-line at narrow widths, the logo shrinks via brand tokens. */
+    .nsub-header__bar { padding: 10px 0; gap: 12px; }
+    .nsub-header__back { padding: 8px 12px; font-size: 13px; }
 
     .nplan-hero { padding: 36px 0 18px; }
-    .nplan-hero h1 { font-size: clamp(28px, 8vw, 38px); }
-    .nplan-hero__meta { gap: 14px 24px; }
+    .nplan-hero h1 { font-size: clamp(26px, 7vw, 34px); }
+    .nplan-hero p.lede { font-size: 15.5px; }
+    .nplan-hero__meta { gap: 14px; }
 
     .nplan-ident { padding: 22px; }
     .nplan-ident h2 { font-size: 20px; }
     .nplan-ident .field { flex-direction: column; gap: 10px; }
+    .nplan-ident .field input,
     .nplan-ident .field button,
     .nplan-ident button { width: 100%; }
     .nplan-ident__state { flex-wrap: wrap; gap: 12px; }
@@ -508,11 +578,15 @@
     .nplan-hero__meta { grid-template-columns: 1fr; }
     .nblock__head { flex-wrap: wrap; gap: 10px; }
     .nblock__time { flex-basis: auto; font-size: 22px; }
+    .nblock__head-text { flex: 1 1 60%; }
     .nblock__head-text h3 { font-size: 18px; }
+    .nblock__pick { font-size: 11px; }
 
-    /* Iframe-tight rooms on phones */
+    /* Cards: tighter padding + smaller heading */
     .nroom { padding: 14px; }
     .nroom h4 { font-size: 14.5px; line-height: 1.25; }
+    .nroom__chips { gap: 4px; }
+    .nroom__chip { font-size: 10px; padding: 3px 7px; }
 
     /* Auto-included plenary card collapses below the icon if needed */
     .nslot-open { padding: 14px 16px; gap: 12px; flex-wrap: wrap; }
@@ -525,10 +599,62 @@
     .nplan-sum__list { padding: 12px 18px 4px; }
     .nplan-sum__foot { padding: 16px 18px 18px; }
   }
-  @media (max-width: 380px) {
-    .nplan-hero { padding: 28px 0 12px; }
-    .nblock__head-text small { letter-spacing: .08em; }
-    .nplan-ident input[type="email"] { font-size: 16px; } /* prevent iOS zoom */
+  @media (max-width: 480px) {
+    /* Hide "Back to home" text-label on the tightest phones, keep just
+       the arrow icon as a circular tap-target. */
+    .nsub-header__back-text { display: none; }
+    .nsub-header__back { padding: 8px 10px; }
+
+    .nplan-hero { padding: 24px 0 12px; }
+    .nplan-hero__chip { font-size: 10.5px; padding: 4px 9px 4px 6px; margin-bottom: 14px; }
+    .nplan-hero h1 { font-size: 24px; margin-bottom: 14px; }
+    .nplan-hero p.lede { font-size: 14px; }
+    .nplan-hero__meta { gap: 10px; margin-top: 18px; }
+    .nplan-hero__meta > div { padding: 12px 14px; border-radius: 10px; }
+    .nplan-hero__meta strong { font-size: 13px; }
+    .nplan-hero__meta small { font-size: 9.5px; }
+
+    .nplan-ident { padding: 16px; border-radius: 14px; }
+    .nplan-ident h2 { font-size: 17px; }
+    .nplan-ident small.eyebrow { font-size: 10px; }
+    .nplan-ident p { font-size: 13px; }
+    .nplan-ident input[type="email"] { font-size: 16px; }  /* prevent iOS zoom */
+
+    .nplan { padding: 28px 0 48px; }
+    .nplan__grid { gap: 20px; }
+    .nblock { margin-bottom: 26px; }
+    .nblock__time { font-size: 20px; }
+
+    .nslot-open { padding: 12px 14px; gap: 10px; border-radius: 12px; }
+    .nslot-open__icn { width: 36px; height: 36px; flex: 0 0 36px; border-radius: 10px; }
+    .nslot-open__body b { font-size: 13.5px; }
+    .nslot-open__body small { font-size: 11.5px; }
+
+    .nroom { padding: 12px; border-radius: 14px; gap: 8px; }
+    .nroom h4 { font-size: 14px; }
+
+    /* Summary row spacing tightens — the inner ellipses still show */
+    .nplan-sum__row { padding: 9px 0; gap: 10px; }
+    .nplan-sum__time { flex: 0 0 50px; font-size: 11.5px; }
+    .nplan-sum__body b { font-size: 12.5px; }
+    .nplan-sum__body small { font-size: 11px; }
+    .nplan-sum__counter { font-size: 11.5px; }
+    .nplan-sum__cta { padding: 13px 14px; font-size: 14px; }
+    .nplan-sum__cta-ghost { padding: 10px 14px; font-size: 13px; }
+  }
+  @media (max-width: 360px) {
+    .nplan-hero h1 { font-size: 22px; }
+    .nplan-hero p.lede { font-size: 13.5px; }
+    .nblock__head-text small { letter-spacing: .08em; font-size: 10.5px; }
+    .nblock__head-text h3 { font-size: 16px; }
+    .nroom { padding: 10px; }
+    .nroom h4 { font-size: 13.5px; }
+    .nroom__chip { font-size: 9.5px; padding: 3px 6px; }
+    .nplan-sum__head { padding: 14px 14px 10px; }
+    .nplan-sum__head h3 { font-size: 17px; }
+    .nplan-sum__list { padding: 10px 14px 4px; }
+    .nplan-sum__foot { padding: 14px 14px 16px; }
+    .nplan-sum__time { flex: 0 0 44px; font-size: 11px; }
   }
 
   .nplan-foot {
@@ -537,6 +663,8 @@
     background: #fff;
   }
   .nplan-foot a { color: var(--cccn-blue-900); font-weight: 600; }
+
+  /* Boarding pass visual styles are in boarding-pass.css (shared module). */
 </style>
 </head>
 <body id="top">
@@ -544,16 +672,16 @@
 <header class="nsub-header">
   <div class="strip-flag"></div>
   <div class="container nsub-header__bar">
-    <a class="nsub-header__logo" href="/" aria-label="Back to home">
-      <img class="ribbon-globe" src="assets/ncte-globe-red.png" alt="NCTE" />
-      <span>
-        <b>NCTE</b>
-        <span>COSTA RICA</span>
-      </span>
+    <a class="nsub-header__logo" href="index.html" aria-label="NCTE 2026 · Back to home">
+      <img class="ncte-header__brand-mark" src="assets/MAIN_LOGO.png" alt="NCTE Costa Rica" />
     </a>
-    <a class="nsub-header__back" href="/">
+    <span class="nsub-header__page-tag" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+      My Itinerary
+    </span>
+    <a class="nsub-header__back" href="index.html">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      Back to home
+      <span class="nsub-header__back-text">Back to home</span>
     </a>
   </div>
 </header>
@@ -568,7 +696,7 @@
       </span>
       <h1>Save my spot for <em>Day 1</em> in-person sessions.</h1>
       <p class="lede">
-        Day 1 concurrent rooms in San Pedro have <strong>limited capacity</strong>. Pick the sessions you'll attend in person so we can hold a seat for you in each block. Plenaries, coffee breaks and the closing cocktail are open to every in-person attendee — no separate reservation needed.
+        Day 1 concurrent rooms in San Pedro have <strong>limited capacity</strong>. Pick the sessions you'll attend in person so we can hold a seat for you in each block. Plenaries, coffee breaks and the closing networking session are open to every in-person attendee — no separate reservation needed.
       </p>
       <div class="nplan-hero__meta">
         <div>
@@ -947,16 +1075,16 @@
           <div class="nblock__time">5:30 pm</div>
           <div class="nblock__head-text">
             <small>Block 5 · Closing</small>
-            <h3>Networking, Raffles &amp; Closing Cocktail</h3>
+            <h3>Networking &amp; Raffles</h3>
           </div>
           <span class="nblock__pick is-open">Open to all</span>
         </div>
         <div class="nslot-open">
           <div class="nslot-open__icn">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 3h10v7a5 5 0 0 1-10 0z"/><path d="M17 5h2a3 3 0 0 1 0 6h-2M7 5H5a3 3 0 0 0 0 6h2"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </div>
           <div class="nslot-open__body">
-            <b>Closing cocktail · Publisher raffles · Networking</b>
+            <b>Networking &amp; Publisher raffles</b>
             <small>CCCN main hall · open to all Day 1 attendees</small>
           </div>
           <span class="nslot-open__tag">Included</span>
@@ -971,7 +1099,7 @@
         <div class="nplan-sum__head">
           <small>My Day 1 plan</small>
           <h3>Wednesday, July 8</h3>
-          <p>Your in-person itinerary at CCCN Los Yoses. Plenaries and the closing cocktail are auto-included.</p>
+          <p>Your in-person itinerary at CCCN Los Yoses. Plenaries and the closing networking session are auto-included.</p>
         </div>
         <div class="nplan-sum__list" data-sum-list>
           <div class="nplan-sum__row">
@@ -1005,7 +1133,7 @@
           <div class="nplan-sum__row">
             <div class="nplan-sum__time">5:30 pm</div>
             <div class="nplan-sum__body">
-              <b>Closing Cocktail</b>
+              <b>Networking &amp; Raffles</b>
               <small>Open to all attendees</small>
             </div>
           </div>
@@ -1015,10 +1143,13 @@
             <span><b data-sum-picked>0</b> of 2 rooms reserved</span>
             <span>Free · No card</span>
           </div>
-          <button type="button" class="nplan-sum__cta is-disabled" data-confirm disabled>
-            Confirm my Day 1 plan →
+          <button type="button" class="nplan-sum__cta is-disabled" data-pass-print disabled>
+            Print my boarding pass →
           </button>
-          <p class="nplan-sum__note">We'll email you a single confirmation with your reserved seats and room numbers. You can change rooms any time before July 1.</p>
+          <button type="button" class="nplan-sum__cta-ghost" data-pass-preview>
+            See my boarding pass
+          </button>
+          <p class="nplan-sum__note">Your boarding pass holds the QR our staff scans at the entrance. You can change rooms and reprint any time before July 8 at midnight (CR).</p>
         </div>
       </div>
     </aside>
@@ -1029,9 +1160,11 @@
 <footer class="nplan-foot">
   <div class="container">
     © 2026 CCCN · National Conference for Teachers of English Costa Rica ·
-    <a href="/">Back to NCTE 2026</a>
+    <a href="index.html">Back to NCTE 2026</a>
   </div>
 </footer>
+
+<!-- Boarding pass modal is injected by boarding-pass.js on first use. -->
 
 <!-- Toast -->
 <div class="nplan-toast" data-toast>
@@ -1042,6 +1175,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="supabase-config.js"></script>
 <script src="auth.js"></script>
+<script src="boarding-pass.js"></script>
 <script>
 (async function () {
   /* ============================================================
@@ -1067,8 +1201,8 @@
   document.body.classList.add("is-loading");
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
-    try { sessionStorage.setItem("ncte_intent_return", location.pathname); } catch {}
-    location.replace("/#register");
+    try { sessionStorage.setItem("ncte_intent_return", "registro-presencial.html"); } catch {}
+    location.replace("index.html#register");
     return;
   }
   // Wait for the profile fetch to settle so the identify card has the right name
@@ -1097,7 +1231,7 @@
   document.querySelector("[data-ident-change]").addEventListener("click", async () => {
     if (confirm("Sign out and return to the homepage?")) {
       await window.NCTEAuth.logout();
-      location.href = "/";
+      location.href = "index.html";
     }
   });
   showIdentified(account);
@@ -1192,18 +1326,20 @@
     const pickedCount = Object.values(picks).filter(Boolean).length;
     const counter = document.querySelector("[data-sum-picked]");
     if (counter) counter.textContent = pickedCount;
-    const cta = document.querySelector("[data-confirm]");
-    if (cta) {
+    const printBtn   = document.querySelector("[data-pass-print]");
+    const previewBtn = document.querySelector("[data-pass-preview]");
+    if (printBtn) {
       if (pickedCount === 0) {
-        cta.disabled = true;
-        cta.classList.add("is-disabled");
-        cta.textContent = "Pick at least 1 room →";
+        printBtn.disabled = true;
+        printBtn.classList.add("is-disabled");
+        printBtn.textContent = "Pick at least 1 room →";
       } else {
-        cta.disabled = false;
-        cta.classList.remove("is-disabled");
-        cta.textContent = "Email me my confirmation →";
+        printBtn.disabled = false;
+        printBtn.classList.remove("is-disabled");
+        printBtn.textContent = "Print my boarding pass →";
       }
     }
+    if (previewBtn) previewBtn.disabled = pickedCount === 0;
   }
 
   paintAll();
@@ -1296,39 +1432,22 @@
     });
   }
 
-  // The "Confirm my plan" CTA now triggers the branded confirmation email.
-  // Picks themselves are already atomically saved server-side on each click;
-  // this button is the user-facing "I'm done, send me my itinerary" moment.
-  const confirmBtn = document.querySelector("[data-confirm]");
-  if (confirmBtn) confirmBtn.addEventListener("click", async () => {
-    if (!Object.values(picks).some(Boolean)) {
-      toast("Pick at least one room first.", "error");
-      return;
-    }
-    if (confirmBtn.disabled) return;
-    confirmBtn.disabled = true;
-    const originalLabel = confirmBtn.textContent;
-    confirmBtn.textContent = "Sending confirmation…";
-    try {
-      const { data, error } = await sb.functions.invoke("send-confirmation");
-      if (error) throw error;
-      if (data && data.sent === false && data.skipped) {
-        // Email infrastructure not configured yet — surface a softer message
-        // so internal demos don't show a scary red error.
-        toast("Plan saved. (Email delivery isn't set up yet — coming soon.)");
-      } else {
-        toast("Confirmation sent. Check your inbox ✦");
-      }
-    } catch (err) {
-      console.error("[Planner] send-confirmation error:", err);
-      const msg = (err && err.message) || "Could not send the confirmation email.";
-      toast(msg, "error");
-    } finally {
-      confirmBtn.disabled = false;
-      // Restore the dynamic label written by paintAll().
-      paintAll();
-      if (confirmBtn.textContent === "Sending confirmation…") confirmBtn.textContent = originalLabel;
-    }
+  /* ============================================================
+     Boarding pass — wire sidebar CTAs to the shared module.
+     The module (boarding-pass.js) owns all the rendering + PDF
+     plumbing. Here we just hand it `account` and `picks` so it
+     doesn't have to re-fetch what the planner already has in scope.
+     ============================================================ */
+  const previewBtn = document.querySelector("[data-pass-preview]");
+  if (previewBtn) previewBtn.addEventListener("click", () => {
+    if (previewBtn.disabled) return;
+    window.NCTEBoardingPass.preview({ account, picks, button: previewBtn });
+  });
+
+  const printBtnEl = document.querySelector("[data-pass-print]");
+  if (printBtnEl) printBtnEl.addEventListener("click", () => {
+    if (printBtnEl.disabled) return;
+    window.NCTEBoardingPass.download({ account, picks, button: printBtnEl });
   });
 
   /* ---- 7. Realtime — keep counters in sync across attendees ---- */

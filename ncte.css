@@ -782,6 +782,52 @@ a.nsched__row:hover::before { height: 60%; }
 .ncta .btn-primary { background: #fff; color: var(--cccn-red); position: relative; z-index: 2; }
 .ncta .btn-primary:hover { background: #FDE3E7; }
 
+/* ============ STAFF UTILITY BAND ============
+   Quiet operational strip between the final marketing CTA and the
+   footer. Links staff to the boarding-pass validator. Visually muted
+   so it doesn't compete with the conversion CTA above. */
+.nstaff {
+  background: linear-gradient(180deg, var(--cccn-blue-900) 0%, #0A1340 100%);
+  color: #fff;
+  padding: 28px 0;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.nstaff__row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+}
+.nstaff__copy { flex: 1 1 320px; min-width: 0; }
+.nstaff__eyebrow {
+  display: inline-block; font-size: 11px; font-weight: 800;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--cccn-red);
+  margin-bottom: 6px;
+}
+.nstaff h3 {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 20px; color: #fff; margin: 0 0 4px;
+  letter-spacing: -.01em;
+}
+.nstaff p {
+  font-size: 13.5px; color: #B8C2D9; line-height: 1.5; margin: 0;
+  max-width: 540px;
+}
+.nstaff__cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #fff; color: var(--cccn-blue-900);
+  padding: 12px 18px; border-radius: 999px;
+  font: inherit; font-family: var(--font-sans);
+  font-weight: 700; font-size: 13.5px;
+  text-decoration: none; flex-shrink: 0;
+  transition: background .15s ease, color .15s ease, transform .12s ease;
+}
+.nstaff__cta:hover { background: var(--cccn-red); color: #fff; transform: translateY(-1px); }
+.nstaff__cta svg { flex-shrink: 0; }
+@media (max-width: 600px) {
+  .nstaff { padding: 22px 0; }
+  .nstaff__cta { width: 100%; justify-content: center; }
+}
+
 /* ============ FOOTER (NCTE specific — slimmer than CCCN main) ============ */
 .nfooter {
   background: #0A1340; color: #B8C2D9; padding: 64px 0 24px;
@@ -949,16 +995,35 @@ a.nsched__row:hover::before { height: 60%; }
   font-size: 11px; color: var(--muted); text-align: center; margin-top: 4px; line-height: 1.5;
 }
 
-/* Logged-in chip in header — link to /registro-presencial ("Mi itinerario") */
+/* ============================================================
+   Logged-in header — 3 equal-height pills:
+   [user dropdown] · [my pass] · [save my spot (data-cta-primary)]
+   All share `height: 40px` so they sit on the same vertical centre.
+   The user "bubble" opens a dropdown that contains "My itinerary"
+   and "Sign out" (no more dedicated logout button beside it).
+   ============================================================ */
+.ncte-header__cta .ncte-header__user,
+.ncte-header__cta > .btn {
+  height: 40px;
+  display: inline-flex; align-items: center;
+}
+
+.ncte-header__user-wrap { position: relative; display: inline-flex; }
+
 .ncte-header__user {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 6px 14px 6px 6px; border-radius: 999px;
+  gap: 10px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
   background: var(--cream); border: 1px solid var(--line);
-  text-decoration: none; color: inherit;
+  color: inherit;
+  font: inherit; font-family: var(--font-sans);
+  cursor: pointer;
   transition: background .15s ease, border-color .15s ease, transform .12s ease;
 }
-.ncte-header__user:hover {
-  background: var(--cccn-red-100); border-color: var(--cccn-red);
+.ncte-header__user:hover,
+.ncte-header__user-wrap.is-open .ncte-header__user {
+  background: var(--cccn-red-100, rgba(238,48,78,.08));
+  border-color: var(--cccn-red);
   transform: translateY(-1px);
 }
 .ncte-header__user .avatar {
@@ -966,27 +1031,77 @@ a.nsched__row:hover::before { height: 60%; }
   background: var(--ncte-gradient); color: #fff;
   display: inline-flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 12px;
+  flex-shrink: 0;
 }
-.ncte-header__user b {
-  font-size: 13px; color: var(--cccn-blue-900); font-weight: 700;
+.ncte-header__user-name {
+  font-size: 13px; font-weight: 700; color: var(--cccn-blue-900);
+  letter-spacing: .01em;
+  max-width: 140px;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
 }
-.ncte-header__user small { display: block; font-size: 11px; color: var(--muted); }
+.ncte-header__user-chev {
+  display: inline-flex; align-items: center;
+  color: var(--muted);
+  transition: transform .18s ease, color .15s ease;
+}
+.ncte-header__user-wrap.is-open .ncte-header__user-chev {
+  transform: rotate(180deg);
+  color: var(--cccn-red);
+}
 
-/* Dedicated sign-out button right next to the avatar */
-.ncte-header__logout {
-  width: 38px; height: 38px; border-radius: 999px;
-  background: #fff; color: var(--muted);
+/* Dropdown menu */
+.ncte-header__dropdown {
+  position: absolute; top: calc(100% + 8px); right: 0;
+  min-width: 220px;
+  background: #fff;
   border: 1px solid var(--line);
-  display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  transition: color .15s ease, border-color .15s ease, background .15s ease;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 24px 48px -16px rgba(4,26,113,.18),
+              0 4px 12px rgba(4,26,113,.06);
+  z-index: 60;
 }
-.ncte-header__logout:hover {
-  color: var(--cccn-red); border-color: var(--cccn-red);
-  background: var(--cccn-red-100);
+.ncte-header__menu-item {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 0; background: transparent;
+  color: var(--ink);
+  text-decoration: none;
+  font: inherit; font-family: var(--font-sans);
+  font-size: 13.5px; font-weight: 600;
+  cursor: pointer; text-align: left;
+  transition: background .12s ease, color .12s ease;
 }
+.ncte-header__menu-item:hover {
+  background: var(--cream);
+  color: var(--cccn-red);
+}
+.ncte-header__menu-item.is-danger:hover {
+  background: var(--cccn-red-100, rgba(238,48,78,.08));
+  color: var(--cccn-red);
+}
+.ncte-header__menu-item svg {
+  width: 16px; height: 16px; flex-shrink: 0;
+  color: var(--muted);
+}
+.ncte-header__menu-item:hover svg { color: currentColor; }
+.ncte-header__menu-item + .ncte-header__menu-item { margin-top: 2px; }
+/* The danger (sign-out) item gets a separator above to set it apart
+   from the navigation items. */
+.ncte-header__menu-item.is-danger {
+  margin-top: 6px;
+  border-top: 1px dashed var(--line);
+  padding-top: 12px;
+}
+
 @media (max-width: 600px) {
-  .ncte-header__logout { width: 34px; height: 34px; }
+  /* Tighter pill on small screens; the chevron drops to icon-only */
+  .ncte-header__user-name { max-width: 90px; font-size: 12px; }
+  .ncte-header__user { padding: 4px 10px 4px 4px; }
+  .ncte-header__cta .ncte-header__user,
+  .ncte-header__cta > .btn { height: 36px; }
 }
 
 /* Password "show/hide" toggle that sits inside the input frame */
@@ -1485,11 +1600,10 @@ body.is-detail-open { overflow: hidden; }
   .ncte-header__cta .btn { padding: 10px 14px; font-size: 13px; }
   .ncte-header__cta .btn svg { display: none; }     /* drop the arrow on phones */
 
-  /* Logged-in chip stays compact */
-  .ncte-header__user { padding: 4px 12px 4px 4px; gap: 8px; }
+  /* Logged-in chip stays compact (single-line; dropdown handles rest) */
+  .ncte-header__user { padding: 4px 10px 4px 4px; gap: 8px; }
   .ncte-header__user .avatar { width: 28px; height: 28px; font-size: 11px; }
-  .ncte-header__user b { font-size: 12px; }
-  .ncte-header__user small { font-size: 10px; }
+  .ncte-header__user-name { font-size: 12px; max-width: 80px; }
 
   /* QUICK BAR — go to single column on phones (was stuck at 2 cols) */
   .nquick { padding: 22px 0; }

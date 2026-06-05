@@ -7,8 +7,11 @@
 -- --- Clean slate when re-running -----------------------------
 drop trigger  if exists on_auth_user_created on auth.users;
 drop function if exists public.handle_new_user();
+drop function if exists public.generate_ticket_code();
 drop function if exists public.reserve_session(text);
 drop function if exists public.cancel_pick(text);
+drop function if exists public.lookup_ticket(text);
+drop function if exists public.check_in(text);
 drop table    if exists public.picks    cascade;
 drop table    if exists public.sessions cascade;
 drop table    if exists public.profiles cascade;
@@ -25,11 +28,51 @@ create table public.profiles (
   institution text not null,
   role        text not null check (role in ('teacher','coordinator','trainee','student','other')),
   country     text not null default 'CR',
+  -- Brand-friendly ticket ID embedded in the boarding pass QR for entrance
+  -- validation. See generate_ticket_code() below.
+  ticket_code text not null unique,
+  -- Set by public.check_in() when staff scans the QR at the entrance.
+  -- NULL = not yet arrived.
+  checked_in_at timestamptz,
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
 
 create index profiles_email_idx on public.profiles (lower(email));
+
+-- Ticket-code generator: NCTE-XXXXXX with a confusion-free alphabet
+-- (no 0/O/1/I/L/U) so scanning at the entrance is reliable. search_path
+-- is pinned so the helper is safe to call from SECURITY DEFINER context.
+create or replace function public.generate_ticket_code()
+returns text
+language plpgsql
+set search_path = public
+as $$
+declare
+  v_alpha constant text := '23456789ABCDEFGHJKMNPQRSTVWXYZ';   -- 30 chars
+  v_len   constant int  := length(v_alpha);
+  v_code  text;
+  v_tries int := 0;
+begin
+  loop
+    v_code := 'NCTE-' ||
+      substr(v_alpha, 1 + floor(random() * v_len)::int, 1) ||
+      substr(v_alpha, 1 + floor(random() * v_len)::int, 1) ||
+      substr(v_alpha, 1 + floor(random() * v_len)::int, 1) ||
+      substr(v_alpha, 1 + floor(random() * v_len)::int, 1) ||
+      substr(v_alpha, 1 + floor(random() * v_len)::int, 1) ||
+      substr(v_alpha, 1 + floor(random() * v_len)::int, 1);
+    exit when not exists (
+      select 1 from public.profiles where ticket_code = v_code
+    );
+    v_tries := v_tries + 1;
+    if v_tries > 8 then
+      raise exception 'generate_ticket_code: no free code after 8 tries';
+    end if;
+  end loop;
+  return v_code;
+end;
+$$;
 
 -- Trigger: when a new auth user is created, populate the profile row from
 -- the metadata fields sent during signUp() — first_name, phone, etc.
@@ -40,7 +83,9 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, email, first_name, last_name, phone, institution, role, country)
+  insert into public.profiles (
+    id, email, first_name, last_name, phone, institution, role, country, ticket_code
+  )
   values (
     new.id,
     new.email,
@@ -49,7 +94,8 @@ begin
     coalesce(new.raw_user_meta_data->>'phone',       ''),
     coalesce(new.raw_user_meta_data->>'institution', ''),
     coalesce(new.raw_user_meta_data->>'role',        'other'),
-    coalesce(new.raw_user_meta_data->>'country',     'CR')
+    coalesce(new.raw_user_meta_data->>'country',     'CR'),
+    public.generate_ticket_code()
   );
   return new;
 end;
@@ -58,6 +104,15 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- handle_new_user and generate_ticket_code are trigger-internal helpers —
+-- never callable via PostgREST. Strip every default EXECUTE grant.
+revoke execute on function public.handle_new_user()      from public;
+revoke execute on function public.handle_new_user()      from anon;
+revoke execute on function public.handle_new_user()      from authenticated;
+revoke execute on function public.generate_ticket_code() from public;
+revoke execute on function public.generate_ticket_code() from anon;
+revoke execute on function public.generate_ticket_code() from authenticated;
 
 -- RLS: only the owner can read or update their own profile row.
 alter table public.profiles enable row level security;
@@ -230,8 +285,9 @@ begin
 end;
 $$;
 
-revoke all on function public.reserve_session(text) from public;
-grant execute on function public.reserve_session(text) to authenticated;
+revoke execute on function public.reserve_session(text) from public;
+revoke execute on function public.reserve_session(text) from anon;
+grant  execute on function public.reserve_session(text) to authenticated;
 
 -- =============================================================
 -- 5. cancel_pick — release a seat without picking a replacement
@@ -276,11 +332,133 @@ begin
 end;
 $$;
 
-revoke all on function public.cancel_pick(text) from public;
-grant execute on function public.cancel_pick(text) to authenticated;
+revoke execute on function public.cancel_pick(text) from public;
+revoke execute on function public.cancel_pick(text) from anon;
+grant  execute on function public.cancel_pick(text) to authenticated;
 
 -- =============================================================
--- 6. Realtime — broadcast updates so seat counters refresh live
+-- 6. lookup_ticket — public read by ticket code for the /v/{code}
+-- validator page that opens directly from the QR scanned at the
+-- entrance. Returns full attendee record + their confirmed picks.
+--
+-- Privacy: callable by `anon`. The ticket code itself is the secret.
+-- =============================================================
+create or replace function public.lookup_ticket(p_code text)
+returns table (
+  found          boolean,
+  message        text,
+  ticket_code    text,
+  first_name     text,
+  last_name      text,
+  email          text,
+  phone          text,
+  institution    text,
+  role           text,
+  country        text,
+  checked_in_at  timestamptz,
+  picks          jsonb
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_profile profiles%rowtype;
+  v_picks   jsonb;
+begin
+  p_code := upper(trim(p_code));
+  if p_code is null or p_code = '' then
+    return query select false, 'Empty code.'::text,
+      null::text, null::text, null::text, null::text, null::text,
+      null::text, null::text, null::text, null::timestamptz, null::jsonb;
+    return;
+  end if;
+
+  select * into v_profile from profiles where profiles.ticket_code = p_code;
+  if not found then
+    return query select false, 'Ticket code not found.'::text,
+      p_code, null::text, null::text, null::text, null::text,
+      null::text, null::text, null::text, null::timestamptz, null::jsonb;
+    return;
+  end if;
+
+  select coalesce(jsonb_agg(jsonb_build_object(
+           'session_id', s.id,
+           'block',      s.block,
+           'title',      s.title,
+           'speaker',    s.speaker,
+           'room',       s.room
+         ) order by s.starts_at), '[]'::jsonb)
+    into v_picks
+  from picks p
+  join sessions s on s.id = p.session_id
+  where p.user_id = v_profile.id and p.status = 'confirmed';
+
+  return query select
+    true, 'OK'::text,
+    v_profile.ticket_code,
+    v_profile.first_name, v_profile.last_name,
+    v_profile.email, v_profile.phone,
+    v_profile.institution, v_profile.role, v_profile.country,
+    v_profile.checked_in_at,
+    v_picks;
+end;
+$$;
+
+revoke execute on function public.lookup_ticket(text) from public;
+grant  execute on function public.lookup_ticket(text) to anon, authenticated;
+
+-- =============================================================
+-- 7. check_in — idempotent mark-as-arrived. First scan stamps
+-- profiles.checked_in_at; subsequent scans return the original
+-- timestamp so the validator UI can flag "already checked in".
+-- =============================================================
+create or replace function public.check_in(p_code text)
+returns table (
+  success         boolean,
+  message         text,
+  already         boolean,
+  checked_in_at   timestamptz,
+  first_name      text,
+  last_name       text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_profile profiles%rowtype;
+begin
+  p_code := upper(trim(p_code));
+  select * into v_profile from profiles where profiles.ticket_code = p_code;
+
+  if not found then
+    return query select false, 'Ticket code not found.'::text,
+      false, null::timestamptz, null::text, null::text;
+    return;
+  end if;
+
+  if v_profile.checked_in_at is not null then
+    return query select true, 'Already checked in.'::text, true,
+      v_profile.checked_in_at, v_profile.first_name, v_profile.last_name;
+    return;
+  end if;
+
+  update profiles
+     set checked_in_at = now()
+   where id = v_profile.id
+   returning checked_in_at into v_profile.checked_in_at;
+
+  return query select true, 'Checked in.'::text, false,
+    v_profile.checked_in_at, v_profile.first_name, v_profile.last_name;
+end;
+$$;
+
+revoke execute on function public.check_in(text) from public;
+grant  execute on function public.check_in(text) to anon, authenticated;
+
+-- =============================================================
+-- 8. Realtime — broadcast updates so seat counters refresh live
 -- =============================================================
 -- Sessions: anyone subscribed sees the new `taken` value the moment
 -- another attendee reserves a seat.

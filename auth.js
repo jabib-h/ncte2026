@@ -65,12 +65,14 @@
     if (!authUser) return null;
     const { data, error } = await sb
       .from("profiles")
-      .select("id, email, first_name, last_name, phone, institution, role, country, created_at")
+      .select("id, email, first_name, last_name, phone, institution, role, country, ticket_code, created_at")
       .eq("id", authUser.id)
       .single();
     if (error) {
       // The signup trigger creates the row; if it isn't there yet (race) we
       // still want SOMETHING to display, so fall back to the auth.users data.
+      // ticket_code is intentionally absent — the boarding-pass UI gates on it
+      // and prompts the user to refresh until the trigger row arrives.
       console.warn("[NCTE Auth] profile fetch fell back to metadata:", error.message);
       const m = authUser.user_metadata || {};
       return {
@@ -82,6 +84,7 @@
         institution: m.institution  || "",
         role:        m.role         || "other",
         country:     m.country      || "CR",
+        ticketCode:  null,
       };
     }
     return {
@@ -93,6 +96,7 @@
       institution: data.institution,
       role:        data.role,
       country:     data.country,
+      ticketCode:  data.ticket_code,
       createdAt:   data.created_at,
     };
   }
@@ -208,7 +212,9 @@
     const u = currentUser();
     if (u) return u;
     const o = opts || {};
-    const target = o.redirect || "/";
+    // Relative fallback so it works under file://, Vercel cleanUrls AND
+    // Azure SWA. Absolute "/" resolves to the filesystem root locally.
+    const target = o.redirect || "index.html";
     try { sessionStorage.setItem("ncte_intent_auth",   o.intent || "login"); } catch {}
     try { sessionStorage.setItem("ncte_intent_return", location.pathname + location.search); } catch {}
     location.replace(target + "#register");
