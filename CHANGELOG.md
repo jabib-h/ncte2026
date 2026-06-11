@@ -33,6 +33,11 @@ Reverse-chronological. Each entry covers one working session.
   cream/white backgrounds, `#sponsors` → `#faq`) already read clearly and
   needed no change.
 
+### Status
+- Reviewed locally, pushed to `main` (commit `c29f638`, bundled with the
+  earlier 2026-06-11 session). **Azure SWA deploy still pending** (manual
+  step, not done yet).
+
 ## 2026-06-11 — Final Day 1 schedule, speaker photos, sponsors/partners
 
 ### Sessions catalog (`index.html` #sesiones, #strands, #speakers)
