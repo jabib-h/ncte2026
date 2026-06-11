@@ -170,11 +170,10 @@ All internal links use **relative paths** (`registro-presencial.html`, `webinars
 See [`CHANGELOG.md`](CHANGELOG.md) for the per-session log of what shipped. Items still open:
 
 1. **Legal pages content** — `privacy.html` / `terms.html` / `code-of-conduct.html` exist as skeletons; CCCN's team fills in the official copy.
-2. **Speaker photos + sponsor logos** — replace initials avatars and placeholder cards.
-3. **Admin view** — restricted page for CCCN staff to download the roster and per-session attendee lists.
-4. **Waitlist** for sessions that go full — promote the first in queue when someone cancels.
-5. **Day 2 Zoom-link delivery** — `send-zoom-links` Edge Function that runs 24 h before each webinar.
-6. **Supabase "Leaked password protection"** — paid Pro-tier feature; revisit when plan upgrades.
+2. **Admin view** — restricted page for CCCN staff to download the roster and per-session attendee lists.
+3. **Waitlist** for sessions that go full — promote the first in queue when someone cancels.
+4. **Day 2 Zoom-link delivery** — `send-zoom-links` Edge Function that runs 24 h before each webinar.
+5. **Supabase "Leaked password protection"** — paid Pro-tier feature; revisit when plan upgrades.
 
 ---
 

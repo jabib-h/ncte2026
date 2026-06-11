@@ -2,6 +2,128 @@
 
 Reverse-chronological. Each entry covers one working session.
 
+## 2026-06-11 (2) — Speaker avatar redesign, sponsor/partner cards, section spacing
+
+### Speakers (`index.html` #speakers, `ncte.css`)
+- `.nspk__avatar` photos are now circular (profile-picture style) instead
+  of the previous blob/rounded-rectangle shape, which didn't crop the
+  presenter photos well.
+- Added a `mask-image: radial-gradient(...)` fade on `.nspk__avatar` so
+  the photo edge dissolves into the strand-colored `.nspk__media`
+  background instead of ending in a hard circle outline.
+- Mark Cormier & Pablo Torres' two-photo split avatar inherits the new
+  circular mask automatically (no HTML change needed).
+
+### Sponsors and Partners (`index.html` #sponsors, `ncte.css`)
+- Replaced the flat `.nsponsors__logo` pill links with a centered
+  `.nsponsors__cards` grid (2 columns, 1 column on mobile ≤600px).
+- Each `.nsponsors__card` is now a full card: category tag, org name,
+  a short description, and a "domain.com →" link — the whole card links
+  out to the org's site.
+- Removed dead CSS: `.nsponsors__logo.platinum` and the
+  `.nsponsors__logo.is-clickable` "+" hint (no longer used anywhere).
+  Base `.nsponsors__logo` / `.nsponsors__logos` rules are kept for
+  `ncte-print.html`'s plain Spanish sponsors mirror.
+
+### Section spacing review
+- `#register` and `#sponsors` share the cream background and already had
+  reduced `clamp(44px, 6vw, 80px)` padding between them — added a
+  hairline `border-top` on `#sponsors` so the section break stays visible
+  even with the tighter gap. Other section transitions (alternating
+  cream/white backgrounds, `#sponsors` → `#faq`) already read clearly and
+  needed no change.
+
+## 2026-06-11 — Final Day 1 schedule, speaker photos, sponsors/partners
+
+### Sessions catalog (`index.html` #sesiones, #strands, #speakers)
+- Replaced the demo Day 1 concurrent lineup with the **final confirmed
+  schedule** from "NCTE 2026 - SCHEDULE": 3 morning concurrents (11:00 am)
+  and 4 afternoon concurrents (4:00 pm) — was 4 + 4.
+  - New: Junuén Mondragón "AI in Action..." (11am), Jay Lee-Gopalan
+    "Education Needs Infrastructure, Not Apps" (Jinso), Oscar Víquez
+    "Adding Emotion to an AI Assisted Learning Experience" (Universidad
+    Latina), Juan Carlos Rivera "Supporting English Language
+    Professionals... RELO" (U.S. Embassy Panama).
+  - Updated: Jonathan Acuña's session moves 11am → 4pm with a new title
+    ("From Reflection to Action..."). Marcela Vaglio's session keeps its
+    4pm slot/strand but gets a new title ("From Information to
+    Inspiration..."). Junuén Mondragón's 2pm plenary gets a new title
+    ("The Art of Teaching in the Age of Algorithms") and moves to 90 min.
+  - Mitchel Resnick's Day 2 webinar (Webinar 05, 4:00 pm) is replaced by
+    Camilo Sánchez, "Prompting with a Purpose: AI Strategies for the ESL
+    Classroom" (Jinso) — updated in `webinars.html` too.
+  - Strand session-link lists updated to match (Strand 03 — Inclusive Ed
+    — gains Oscar Víquez; Strand 05 — Moving Forward — gains Jay
+    Lee-Gopalan and Camilo Sánchez, replacing Mitchel Resnick).
+- Added real presenter photos for every speaker in #sesiones and
+  #speakers (previously initials-only avatars). New CSS pattern:
+  `.nact__speaker-avatar`, `.ndetail__speaker-avatar`, `.nspk__avatar`,
+  and `.nroom__avatar` (planner) get `overflow:hidden` + a child `<img>`
+  with `object-fit:cover`. Mark Cormier & Pablo Torres' combined avatar
+  uses a new two-photo split layout (each photo at 50% width).
+
+### Planner (`registro-presencial.html`)
+- Morning block: "(6 simultaneous)" / "Pick 1 of 6" → "(3 simultaneous)"
+  / "Pick 1 of 3", with the 3 new room cards above.
+- Afternoon block: "(6 simultaneous)" / "Pick 1 of 6" → "(4 simultaneous)"
+  / "Pick 1 of 4", with the 4 updated/new room cards above.
+- Afternoon plenary card text updated to match Mondragón's new title and
+  90-min duration.
+- Fixed two leftover hardcoded "6 simultaneous sessions" / "Pick 1 of 6"
+  strings in the summary-sidebar JS — now derived from a
+  `{ morning: 3, afternoon: 4 }` map so the empty-state copy and block
+  chips match the new room counts per slot.
+
+### Day 2 schedule list (`index.html` #schedule)
+- Fixed a leftover "Interactive Webinar 5 · Mitchel Resnick" row (with
+  `href="#act-resnick"`) that the earlier #sesiones/#strands/#speakers
+  pass missed — now points to `#act-sanchez` / Camilo Sánchez.
+
+### Copy (`index.html` hero/about/program)
+- "Two days. One complete conference." → "Two days. One comprehensive
+  program." (more formal).
+- "...uninterrupted since 1984" → "...since 1984".
+- "+30 sessions, workshops and webinars..." → "+15 sessions, workshops
+  and webinars..." (matches the trimmed final lineup).
+- Schedule section: "6 simultaneous rooms" → "3 simultaneous rooms"
+  (11am block) / "4 simultaneous rooms" (4pm block).
+
+### Sponsors → Sponsors and Partners
+- Removed the placeholder Platinum / Gold / Education Partners tiers
+  (Cambridge, Pearson, Macmillan, Oxford, British Council, ETS TOEFL,
+  UCR, UNED, INA) and the unused `sponsor-info-tpl` detail modal.
+- New flat structure with two groups:
+  - **Sponsors**: Jinso (jinso.com), National Geographic Learning
+    (eltngl.com).
+  - **Partners**: U.S. Embassy in Costa Rica (cr.usembassy.gov/es),
+    MEP Costa Rica (mep.go.cr).
+  - Each links out directly to the org's site (`target="_blank"`).
+  - Mirrored in `ncte-print.html` (Spanish: "Patrocinadores y Aliados").
+
+### Database (project `tdhdwjsugijnxfaqzxnu`, applied via MCP)
+- Migration `2026-06-11_replace_day1_concurrent_sessions.sql`: replaced
+  `public.sessions` Day 1 rows to match the new catalog (`mondragon-ai`,
+  `leegopalan`, `viquez`, `acuna`, `cormier-torres`, `vaglio`, `rivera`).
+  `vaglio` keeps its id with an updated title; `cormier-torres` is
+  unchanged. The 4 removed rooms (`m-room-b`, `m-room-c`, `m-room-d`,
+  `a-room-c`, `a-room-d`) and the old `acuna` (11am) are dropped.
+- **Real confirmed picks existed** for the removed/recreated session ids
+  (4 picks for the dropped rooms, 5 picks — 3 confirmed + 2 cancelled —
+  for the old `acuna`). Per explicit decision, those pick rows were
+  hard-deleted along with the sessions rather than migrated forward.
+- `supabase/seed.sql` updated to match for fresh local setups.
+
+### Open items / judgment calls made without blocking
+- Marcela Vaglio's session keeps `strand="assessment"` even though her
+  new title doesn't mention assessment — done to avoid leaving Strand 02
+  (Assessment) empty.
+- Jay Lee-Gopalan and Camilo Sánchez (both Jinso) have no nationality in
+  the source data — labelled "🌎 International".
+- Juan Carlos Rivera (U.S. Embassy Panama RELO) labelled "🇵🇦 Panama" —
+  inferred from his office, not explicitly stated in the source Excel.
+
+---
+
 ## 2026-06-04 (5) — Validator gate + sponsor cleanup
 
 ### Validator passcode

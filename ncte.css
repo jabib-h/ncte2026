@@ -504,23 +504,29 @@ a.nsched__row:hover::before { height: 60%; }
   aspect-ratio: 1 / 1;
   background: var(--ncte-gradient);
   position: relative; overflow: hidden;
-  display: flex; align-items: flex-end; justify-content: center;
+  display: flex; align-items: center; justify-content: center;
 }
 .nspk__media::after {
   content: ""; position: absolute; inset: 0;
   background:
-    radial-gradient(circle at 50% 38%, rgba(255,255,255,.25), transparent 50%),
-    linear-gradient(180deg, transparent 55%, rgba(4,26,113,.55) 100%);
+    radial-gradient(circle at 50% 42%, rgba(255,255,255,.22), transparent 55%),
+    linear-gradient(180deg, transparent 60%, rgba(4,26,113,.45) 100%);
 }
 .nspk__avatar {
   position: relative; z-index: 2;
-  width: 76%; height: 78%; align-self: end;
-  background: linear-gradient(180deg, rgba(255,255,255,.85) 0%, rgba(255,255,255,.55) 100%);
-  border-radius: 50% 50% 8px 8px / 65% 65% 8px 8px;
-  display: flex; align-items: flex-end; justify-content: center;
-  font-family: var(--font-sans); font-weight: 800; font-size: 64px;
-  color: var(--cccn-blue-900); letter-spacing: -.04em;
-  padding-bottom: 8%;
+  width: 70%; aspect-ratio: 1 / 1;
+  background: rgba(255,255,255,.18);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-sans); font-weight: 800; font-size: 56px;
+  color: #fff; letter-spacing: -.04em;
+  overflow: hidden;
+  /* Fade the photo into the strand-colored background instead of a hard circle edge */
+  -webkit-mask-image: radial-gradient(circle, #000 58%, transparent 96%);
+          mask-image: radial-gradient(circle, #000 58%, transparent 96%);
+}
+.nspk__avatar img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center 30%; display: block;
 }
 .nspk__strand {
   position: absolute; top: 14px; left: 14px; z-index: 3;
@@ -675,8 +681,52 @@ a.nsched__row:hover::before { height: 60%; }
   color: var(--muted-2); letter-spacing: .04em;
   transition: color .2s ease, border-color .2s ease, transform .2s ease;
 }
-.nsponsors__logo.platinum { width: 240px; height: 100px; font-size: 18px; }
 .nsponsors__logo:hover { color: var(--cccn-blue-900); border-color: var(--cccn-blue-500); transform: translateY(-2px); }
+
+.nsponsors__cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  max-width: 760px;
+  margin-inline: auto;
+}
+.nsponsors__card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--r-md);
+  padding: 24px; text-align: left; text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.nsponsors__card:hover {
+  transform: translateY(-3px);
+  border-color: var(--cccn-blue-500);
+  box-shadow: 0 12px 28px -16px rgba(4,26,113,.25);
+}
+.nsponsors__card-tag {
+  font-size: 11px; letter-spacing: .18em; text-transform: uppercase; font-weight: 700;
+  color: var(--cccn-blue-500);
+}
+.nsponsors__card h5 {
+  margin: 0; font-size: 17px; font-weight: 800; color: var(--cccn-blue-900);
+}
+.nsponsors__card p {
+  margin: 0; font-size: 14px; line-height: 1.5; color: var(--muted-2);
+}
+.nsponsors__card-link {
+  margin-top: auto; padding-top: 8px;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 700; color: var(--cccn-blue-900);
+  transition: color .2s ease;
+}
+.nsponsors__card-link svg { transition: transform .2s ease; }
+.nsponsors__card:hover .nsponsors__card-link { color: var(--cccn-red); }
+.nsponsors__card:hover .nsponsors__card-link svg { transform: translate(2px, -2px); }
+
+@media (max-width: 600px) {
+  .nsponsors__cards {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
+}
 
 /* ============ CALL FOR PROPOSALS ============ */
 .ncfp {
@@ -1179,7 +1229,9 @@ a.nsched__row:hover::before { height: 60%; }
 /* ============ ACTIVITIES (Sesiones) ============ */
 /* Tighter padding between Register → Sponsors → FAQ flow */
 #register { padding-bottom: clamp(44px, 6vw, 80px); }
-#sponsors { padding-top: clamp(44px, 6vw, 80px); padding-bottom: clamp(44px, 6vw, 80px); }
+/* #register and #sponsors share the cream background, so a hairline divider
+   keeps the section break visible despite the reduced padding */
+#sponsors { padding-top: clamp(44px, 6vw, 80px); padding-bottom: clamp(44px, 6vw, 80px); border-top: 1px solid var(--line); }
 #faq { padding-top: clamp(44px, 6vw, 80px); }
 
 .nact-filters {
@@ -1283,6 +1335,10 @@ a.nsched__row:hover::before { height: 60%; }
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-sans); font-weight: 800; font-size: 14px;
   letter-spacing: -.02em; flex-shrink: 0;
+  overflow: hidden;
+}
+.nact__speaker-avatar img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
 }
 .nact[data-strand="best-practices"] .nact__speaker-avatar { background: #FDE3E7; color: var(--cccn-red); }
 .nact[data-strand="assessment"]     .nact__speaker-avatar { background: var(--cccn-blue-100); color: var(--cccn-blue-700); }
@@ -1433,6 +1489,10 @@ body.is-detail-open { overflow: hidden; }
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-sans); font-weight: 800; font-size: 16px;
   letter-spacing: -.02em;
+  overflow: hidden; flex-shrink: 0;
+}
+.ndetail__speaker-avatar img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
 }
 .ndetail__speaker b {
   display: block; font-size: 15px; color: var(--cccn-blue-900);
@@ -1547,12 +1607,6 @@ body.is-detail-open { overflow: hidden; }
 /* Adjust on nstrand (already has number top-right) */
 .nstrand.is-clickable::after { top: 14px; right: 14px; background: var(--cccn-red); color: #fff; }
 .nstrand.is-clickable .nstrand__num { display: none; }
-
-/* Sponsors clickable + indicator */
-.nsponsors__logo.is-clickable {
-  cursor: pointer;
-}
-.nsponsors__logo.is-clickable::after { top: 8px; right: 8px; width: 22px; height: 22px; font-size: 16px; }
 
 /* ==========================================================================
    RESPONSIVE REFINEMENTS — phone-first audit, 2026-06

@@ -351,6 +351,10 @@
     display: grid; place-items: center;
     font-size: 11px; font-weight: 700;
     flex: 0 0 30px;
+    overflow: hidden;
+  }
+  .nroom__avatar img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
   }
   .nroom__speaker b { font-size: 13px; color: var(--cccn-blue-900); line-height: 1.2; }
   .nroom__speaker small { display: block; font-size: 11.5px; color: var(--muted); }
@@ -768,139 +772,91 @@
         <div class="nblock__head">
           <div class="nblock__time">11:00 am</div>
           <div class="nblock__head-text">
-            <small>Block 2 · Pick one room (6 simultaneous)</small>
+            <small>Block 2 · Pick one room (3 simultaneous)</small>
             <h3>Morning Concurrent Sessions</h3>
           </div>
-          <span class="nblock__pick" data-block-pick="morning">Pick 1 of 6</span>
+          <span class="nblock__pick" data-block-pick="morning">Pick 1 of 3</span>
         </div>
 
         <div class="nrooms">
 
-          <button type="button" class="nroom" data-slot="morning" data-id="acuna"
-                  data-title="Teacher reflection supported by AI"
-                  data-speaker="Jonathan Acuña"
+          <button type="button" class="nroom" data-slot="morning" data-id="mondragon-ai"
+                  data-title="AI in Action: Everyday Tools and Classroom Ideas for Busy Teachers"
+                  data-speaker="Junuen Mondragón"
                   data-room="Room A · 30 seats"
-                  data-seats-left="12">
+                  data-seats-left="22">
+            <div class="nroom__head">
+              <div class="nroom__chips">
+                <span class="nroom__chip">Concurrent</span>
+                <span class="nroom__chip is-strand">Best Practices</span>
+              </div>
+              <span class="nroom__room">Room A</span>
+            </div>
+            <h4>AI in Action: Everyday Tools and Classroom Ideas for Busy Teachers</h4>
+            <div class="nroom__speaker">
+              <span class="nroom__avatar"><img src="assets/speakers/junuen-mondragon.png" alt="Junuen Mondragón"/></span>
+              <div>
+                <b>Junuen Mondragón</b>
+                <small>Nat Geo Learning · 🇲🇽 Mexico</small>
+              </div>
+            </div>
+            <div class="nroom__seats">
+              <span><b>22</b> of 30 seats left</span>
+              <span class="nroom__seats-bar"><span style="width:74%;"></span></span>
+            </div>
+          </button>
+
+          <button type="button" class="nroom" data-slot="morning" data-id="leegopalan"
+                  data-title="Education Needs Infrastructure, Not Apps"
+                  data-speaker="Jay Lee-Gopalan"
+                  data-room="Room B · 30 seats"
+                  data-seats-left="26">
             <div class="nroom__head">
               <div class="nroom__chips">
                 <span class="nroom__chip">Concurrent</span>
                 <span class="nroom__chip is-strand">Moving Forward</span>
               </div>
-              <span class="nroom__room">Room A</span>
-            </div>
-            <h4>Teacher reflection supported by AI</h4>
-            <div class="nroom__speaker">
-              <span class="nroom__avatar">JA</span>
-              <div>
-                <b>Jonathan Acuña</b>
-                <small>🇨🇷 Costa Rica</small>
-              </div>
-            </div>
-            <div class="nroom__seats">
-              <span><b>12</b> of 30 seats left</span>
-              <span class="nroom__seats-bar"><span style="width:60%;"></span></span>
-            </div>
-          </button>
-
-          <button type="button" class="nroom" data-slot="morning" data-id="m-room-b"
-                  data-title="Building rubrics with AI for B1 writing"
-                  data-speaker="Diana Salas"
-                  data-room="Room B · 30 seats"
-                  data-seats-left="22">
-            <div class="nroom__head">
-              <div class="nroom__chips">
-                <span class="nroom__chip">Concurrent</span>
-                <span class="nroom__chip is-strand">Assessment</span>
-              </div>
               <span class="nroom__room">Room B</span>
             </div>
-            <h4>Building rubrics with AI for B1 writing</h4>
+            <h4>Education Needs Infrastructure, Not Apps</h4>
             <div class="nroom__speaker">
-              <span class="nroom__avatar">DS</span>
+              <span class="nroom__avatar"><img src="assets/speakers/jay-lee-gopalan.jpg" alt="Jay Lee-Gopalan"/></span>
               <div>
-                <b>Diana Salas</b>
-                <small>🇨🇷 Costa Rica</small>
+                <b>Jay Lee-Gopalan</b>
+                <small>Jinso</small>
               </div>
             </div>
             <div class="nroom__seats">
-              <span><b>22</b> of 30 seats left</span>
-              <span class="nroom__seats-bar"><span style="width:80%;"></span></span>
+              <span><b>26</b> of 30 seats left</span>
+              <span class="nroom__seats-bar"><span style="width:87%;"></span></span>
             </div>
           </button>
 
-          <button type="button" class="nroom" data-slot="morning" data-id="m-room-c"
-                  data-title="Storytelling and SEL in the young learners classroom"
-                  data-speaker="Andrea Rojas"
+          <button type="button" class="nroom" data-slot="morning" data-id="viquez"
+                  data-title="Adding Emotion to an AI Assisted Learning Experience"
+                  data-speaker="Oscar Víquez"
                   data-room="Room C · 30 seats"
-                  data-seats-left="4">
-            <div class="nroom__head">
-              <div class="nroom__chips">
-                <span class="nroom__chip">Concurrent</span>
-                <span class="nroom__chip is-strand">Young Learners</span>
-              </div>
-              <span class="nroom__room">Room C</span>
-            </div>
-            <h4>Storytelling and SEL in the young learners classroom</h4>
-            <div class="nroom__speaker">
-              <span class="nroom__avatar">AR</span>
-              <div>
-                <b>Andrea Rojas</b>
-                <small>🇨🇷 Costa Rica</small>
-              </div>
-            </div>
-            <div class="nroom__seats is-low">
-              <span><b>4</b> of 30 seats left</span>
-              <span class="nroom__seats-bar"><span style="width:14%;"></span></span>
-            </div>
-          </button>
-
-          <button type="button" class="nroom is-full" data-slot="morning" data-id="m-room-d"
-                  data-title="UDL for the multilevel English classroom"
-                  data-speaker="Carlos Mendez"
-                  data-room="Room D · 30 seats"
-                  data-seats-left="0">
+                  data-seats-left="29">
             <div class="nroom__head">
               <div class="nroom__chips">
                 <span class="nroom__chip">Concurrent</span>
                 <span class="nroom__chip is-strand">Inclusive Ed</span>
               </div>
-              <span class="nroom__room">Room D</span>
+              <span class="nroom__room">Room C</span>
             </div>
-            <h4>UDL for the multilevel English classroom</h4>
+            <h4>Adding Emotion to an AI Assisted Learning Experience</h4>
             <div class="nroom__speaker">
-              <span class="nroom__avatar">CM</span>
+              <span class="nroom__avatar"><img src="assets/speakers/oscar-viquez.jpg" alt="Oscar Víquez"/></span>
               <div>
-                <b>Carlos Méndez</b>
-                <small>🇨🇷 Costa Rica</small>
+                <b>Oscar Víquez</b>
+                <small>Universidad Latina · 🇨🇷 Costa Rica</small>
               </div>
             </div>
-            <div class="nroom__seats is-full-state">
-              <span><b>Full</b> · join waitlist</span>
-              <span class="nroom__seats-bar"><span style="width:100%;"></span></span>
+            <div class="nroom__seats">
+              <span><b>29</b> of 30 seats left</span>
+              <span class="nroom__seats-bar"><span style="width:97%;"></span></span>
             </div>
           </button>
-
-          <div class="nroom is-placeholder">
-            <div class="nroom__head">
-              <div class="nroom__chips">
-                <span class="nroom__chip is-strand">Best Practices</span>
-              </div>
-              <span class="nroom__room">Room E</span>
-            </div>
-            <h4>Session announced soon</h4>
-            <div class="nroom__placeholder-text">Speaker and topic publish in the coming weeks. You'll be able to save your spot here as soon as it's live.</div>
-          </div>
-
-          <div class="nroom is-placeholder">
-            <div class="nroom__head">
-              <div class="nroom__chips">
-                <span class="nroom__chip is-strand">Moving Forward</span>
-              </div>
-              <span class="nroom__room">Room F</span>
-            </div>
-            <h4>Session announced soon</h4>
-            <div class="nroom__placeholder-text">Speaker and topic publish in the coming weeks. You'll be able to save your spot here as soon as it's live.</div>
-          </div>
 
         </div>
       </div>
@@ -920,8 +876,8 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
           </div>
           <div class="nslot-open__body">
-            <b>Junuen Mondragón · Human connections in the digital classroom</b>
-            <small>CCCN Auditorium · 200 seats · 60 min</small>
+            <b>Junuen Mondragón · The Art of Teaching in the Age of Algorithms</b>
+            <small>CCCN Auditorium · 200 seats · 90 min</small>
           </div>
           <span class="nslot-open__tag">Included</span>
         </div>
@@ -932,10 +888,10 @@
         <div class="nblock__head">
           <div class="nblock__time">4:00 pm</div>
           <div class="nblock__head-text">
-            <small>Block 4 · Pick one room (6 simultaneous)</small>
+            <small>Block 4 · Pick one room (4 simultaneous)</small>
             <h3>Afternoon Concurrent Sessions</h3>
           </div>
-          <span class="nblock__pick" data-block-pick="afternoon">Pick 1 of 6</span>
+          <span class="nblock__pick" data-block-pick="afternoon">Pick 1 of 4</span>
         </div>
 
         <div class="nrooms">
@@ -954,7 +910,7 @@
             </div>
             <h4>Designing Communicative Listening Tasks with AI Support</h4>
             <div class="nroom__speaker">
-              <span class="nroom__avatar">MC</span>
+              <span class="nroom__avatar"><img src="assets/speakers/mark-cormier.png" alt="Mark Cormier"/></span>
               <div>
                 <b>Mark Cormier &amp; Pablo Torres</b>
                 <small>CCCN · 🇨🇷 Costa Rica · Bring laptop</small>
@@ -967,7 +923,7 @@
           </button>
 
           <button type="button" class="nroom" data-slot="afternoon" data-id="vaglio"
-                  data-title="Rethinking assessment in the age of AI"
+                  data-title="From Information to Inspiration: The New Mission of ELT Teachers"
                   data-speaker="Marcela Vaglio"
                   data-room="Room B · 30 seats"
                   data-seats-left="18">
@@ -978,12 +934,12 @@
               </div>
               <span class="nroom__room">Room B</span>
             </div>
-            <h4>Rethinking assessment in the age of AI</h4>
+            <h4>From Information to Inspiration: The New Mission of ELT Teachers</h4>
             <div class="nroom__speaker">
-              <span class="nroom__avatar">MV</span>
+              <span class="nroom__avatar"><img src="assets/speakers/marcela-vaglio.png" alt="Marcela Vaglio"/></span>
               <div>
                 <b>Marcela Vaglio</b>
-                <small>🇨🇷 Costa Rica</small>
+                <small>Pearson · 🇨🇷 Costa Rica</small>
               </div>
             </div>
             <div class="nroom__seats">
@@ -992,24 +948,24 @@
             </div>
           </button>
 
-          <button type="button" class="nroom" data-slot="afternoon" data-id="a-room-c"
-                  data-title="Voice-first activities for the speaking classroom"
-                  data-speaker="Sofia Cordero"
+          <button type="button" class="nroom" data-slot="afternoon" data-id="acuna"
+                  data-title="From Reflection to Action: Designing Meaningful Learning Experiences in ELT"
+                  data-speaker="Jonathan Acuña"
                   data-room="Room C · 30 seats"
                   data-seats-left="25">
             <div class="nroom__head">
               <div class="nroom__chips">
                 <span class="nroom__chip">Concurrent</span>
-                <span class="nroom__chip is-strand">Best Practices</span>
+                <span class="nroom__chip is-strand">Moving Forward</span>
               </div>
               <span class="nroom__room">Room C</span>
             </div>
-            <h4>Voice-first activities for the speaking classroom</h4>
+            <h4>From Reflection to Action: Designing Meaningful Learning Experiences in ELT</h4>
             <div class="nroom__speaker">
-              <span class="nroom__avatar">SC</span>
+              <span class="nroom__avatar"><img src="assets/speakers/jonathan-acuna.jpg" alt="Jonathan Acuña"/></span>
               <div>
-                <b>Sofía Cordero</b>
-                <small>🇨🇷 Costa Rica</small>
+                <b>Jonathan Acuña</b>
+                <small>CCCN · 🇨🇷 Costa Rica</small>
               </div>
             </div>
             <div class="nroom__seats">
@@ -1018,24 +974,24 @@
             </div>
           </button>
 
-          <button type="button" class="nroom" data-slot="afternoon" data-id="a-room-d"
-                  data-title="Co-creating materials with AI: ethics &amp; quality"
-                  data-speaker="Laura Quirós"
+          <button type="button" class="nroom" data-slot="afternoon" data-id="rivera"
+                  data-title="Supporting English Language Professionals: Resources from the U.S. Embassy Panama's Regional English Language Office"
+                  data-speaker="Juan Carlos Rivera"
                   data-room="Room D · 30 seats"
                   data-seats-left="9">
             <div class="nroom__head">
               <div class="nroom__chips">
                 <span class="nroom__chip">Concurrent</span>
-                <span class="nroom__chip is-strand">Moving Forward</span>
+                <span class="nroom__chip is-strand">Best Practices</span>
               </div>
               <span class="nroom__room">Room D</span>
             </div>
-            <h4>Co-creating materials with AI: ethics &amp; quality</h4>
+            <h4>Supporting English Language Professionals: Resources from the U.S. Embassy Panama's RELO</h4>
             <div class="nroom__speaker">
-              <span class="nroom__avatar">LQ</span>
+              <span class="nroom__avatar"><img src="assets/speakers/juan-carlos-rivera.png" alt="Juan Carlos Rivera"/></span>
               <div>
-                <b>Laura Quirós</b>
-                <small>🇨🇷 Costa Rica</small>
+                <b>Juan Carlos Rivera</b>
+                <small>U.S. Embassy Panama · 🇵🇦 Panama</small>
               </div>
             </div>
             <div class="nroom__seats">
@@ -1043,28 +999,6 @@
               <span class="nroom__seats-bar"><span style="width:30%;"></span></span>
             </div>
           </button>
-
-          <div class="nroom is-placeholder">
-            <div class="nroom__head">
-              <div class="nroom__chips">
-                <span class="nroom__chip is-strand">Young Learners</span>
-              </div>
-              <span class="nroom__room">Room E</span>
-            </div>
-            <h4>Session announced soon</h4>
-            <div class="nroom__placeholder-text">Speaker and topic publish in the coming weeks. You'll be able to save your spot here as soon as it's live.</div>
-          </div>
-
-          <div class="nroom is-placeholder">
-            <div class="nroom__head">
-              <div class="nroom__chips">
-                <span class="nroom__chip is-strand">Inclusive Ed</span>
-              </div>
-              <span class="nroom__room">Room F</span>
-            </div>
-            <h4>Session announced soon</h4>
-            <div class="nroom__placeholder-text">Speaker and topic publish in the coming weeks. You'll be able to save your spot here as soon as it's live.</div>
-          </div>
 
         </div>
       </div>
@@ -1113,7 +1047,7 @@
             <div class="nplan-sum__time">11:00 am</div>
             <div class="nplan-sum__body is-empty" data-sum-empty="morning">
               <b>Pick a morning room →</b>
-              <small>Choose one of the 6 simultaneous sessions</small>
+              <small>Choose one of the 3 simultaneous sessions</small>
             </div>
           </div>
           <div class="nplan-sum__row">
@@ -1127,7 +1061,7 @@
             <div class="nplan-sum__time">4:00 pm</div>
             <div class="nplan-sum__body is-empty" data-sum-empty="afternoon">
               <b>Pick an afternoon room →</b>
-              <small>Choose one of the 6 simultaneous sessions</small>
+              <small>Choose one of the 4 simultaneous sessions</small>
             </div>
           </div>
           <div class="nplan-sum__row">
@@ -1298,10 +1232,11 @@
   function paintAll() {
     cards.forEach(paintCard);
     // Block status chips
+    const slotRoomCount = { morning: 3, afternoon: 4 };
     document.querySelectorAll("[data-block-pick]").forEach(chip => {
       const slot = chip.dataset.blockPick;
       if (picks[slot]) { chip.textContent = "1 picked";      chip.classList.add("is-open"); }
-      else             { chip.textContent = "Pick 1 of 6";   chip.classList.remove("is-open"); }
+      else             { chip.textContent = `Pick 1 of ${slotRoomCount[slot]}`;   chip.classList.remove("is-open"); }
     });
     // Summary
     ["morning", "afternoon"].forEach(slot => {
@@ -1319,7 +1254,7 @@
         row.setAttribute("data-sum-empty", slot);
         row.innerHTML =
           `<b>Pick ${slot === "morning" ? "a morning" : "an afternoon"} room →</b>` +
-          `<small>Choose one of the 6 simultaneous sessions</small>`;
+          `<small>Choose one of the ${slotRoomCount[slot]} simultaneous sessions</small>`;
       }
     });
     // Counter + CTA
